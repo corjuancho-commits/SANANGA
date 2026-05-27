@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sananga LMS</title>
+    <meta
+      name="description"
+      content="Sananga LMS: plataforma educativa inteligente para formacion, evaluacion y certificacion verificable en salud."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Navegacion principal">
+        <a class="brand" href="#inicio" data-route="inicio" aria-label="Sananga LMS inicio">
+          <span class="brand-mark" aria-hidden="true">S</span>
+          <span>
+            <strong>Sananga</strong>
+            <small>LMS salud</small>
+          </span>
+        </a>
+
+        <nav class="nav-list">
+          <button class="nav-item is-active" data-route="inicio" type="button">
+            <span aria-hidden="true">IN</span>
+            Inicio
+          </button>
+          <button class="nav-item" data-route="catalogo" type="button">
+            <span aria-hidden="true">CA</span>
+            Catalogo
+          </button>
+          <button class="nav-item" data-route="curso" type="button">
+            <span aria-hidden="true">CU</span>
+            Curso
+          </button>
+          <button class="nav-item" data-route="evaluacion" type="button">
+            <span aria-hidden="true">EV</span>
+            Evaluacion
+          </button>
+          <button class="nav-item" data-route="pce" type="button">
+            <span aria-hidden="true">PC</span>
+            PCE
+          </button>
+          <button class="nav-item" data-route="certificados" type="button">
+            <span aria-hidden="true">CE</span>
+            Certificados
+          </button>
+          <button class="nav-item" data-route="admin" type="button">
+            <span aria-hidden="true">AD</span>
+            Admin
+          </button>
+        </nav>
+
+        <div class="sidebar-status" id="sidebarStatus"></div>
+      </aside>
+
+      <div class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Plataforma educativa inteligente</p>
+            <h1 id="viewTitle">Inicio</h1>
+          </div>
+          <div class="topbar-actions">
+            <button class="icon-button" id="resetDemo" type="button" aria-label="Reiniciar demo">
+              RS
+            </button>
+            <button class="primary-action" data-route="curso" type="button">Continuar curso</button>
+          </div>
+        </header>
+
+        <main>
+          <section class="view is-active" id="view-inicio" aria-labelledby="titulo-inicio">
+            <div class="dashboard-hero">
+              <img src="assets/sananga-hero.png" alt="Equipo de salud en una sesion de aprendizaje digital" />
+              <div class="hero-copy">
+                <p class="eyebrow">Formacion verificable</p>
+                <h2 id="titulo-inicio">Sananga certifica competencia demostrada</h2>
+                <p>
+                  Un LMS para salud que une rutas de aprendizaje, evidencia, evaluacion, PCE y
+                  certificados verificables en una experiencia movil y trazable.
+                </p>
+                <div class="hero-actions">
+                  <button class="primary-action" data-route="catalogo" type="button">Explorar catalogo</button>
+                  <button class="secondary-action" data-route="evaluacion" type="button">Presentar evaluacion</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="metric-grid" id="studentMetrics"></div>
+
+            <div class="split-layout">
+              <section class="panel">
+                <div class="panel-header">
+                  <div>
+                    <p class="eyebrow">Perfil</p>
+                    <h3>Ingreso rapido</h3>
+                  </div>
+                </div>
+                <form class="profile-form" id="profileForm">
+                  <label>
+                    Nombre
+                    <input id="profileName" name="name" autocomplete="name" placeholder="Estudiante Sananga" />
+                  </label>
+                  <label>
+                    Correo
+                    <input
+                      id="profileEmail"
+                      name="email"
+                      type="email"
+                      autocomplete="email"
+                      placeholder="estudiante@sananga.edu"
+                    />
+                  </label>
+                  <label>
+                    Rol
+                    <select id="profileRole" name="role">
+                      <option value="Estudiante individual">Estudiante individual</option>
+                      <option value="Administrador empresarial">Administrador empresarial</option>
+                      <option value="Tutor academico">Tutor academico</option>
+                    </select>
+                  </label>
+                  <button class="primary-action" type="submit">Guardar perfil</button>
+                </form>
+              </section>
+
+              <section class="panel">
+                <div class="panel-header">
+                  <div>
+                    <p class="eyebrow">Trazabilidad</p>
+                    <h3>Eventos recientes</h3>
+                  </div>
+                  <button class="secondary-action compact" data-route="admin" type="button">Ver auditoria</button>
+                </div>
+                <div class="event-list" id="recentEvents"></div>
+              </section>
+            </div>
+          </section>
+
+          <section class="view" id="view-catalogo" aria-labelledby="titulo-catalogo">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Catalogo</p>
+                <h2 id="titulo-catalogo">Cursos disponibles</h2>
+              </div>
+              <div class="segmented-control" role="tablist" aria-label="Filtro de cursos">
+                <button class="is-selected" data-filter="todos" type="button">Todos</button>
+                <button data-filter="normativo" type="button">Normativo</button>
+                <button data-filter="bienestar" type="button">Bienestar</button>
+              </div>
+            </div>
+            <div class="course-grid" id="catalogGrid"></div>
+          </section>
+
+          <section class="view" id="view-curso" aria-labelledby="titulo-curso">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Ruta de aprendizaje</p>
+                <h2 id="titulo-curso">Curso activo</h2>
+              </div>
+              <button class="secondary-action" data-route="evaluacion" type="button">Ir a evaluacion</button>
+            </div>
+            <div class="course-workbench">
+              <aside class="panel route-panel">
+                <div class="panel-header">
+                  <div>
+                    <p class="eyebrow">Progreso</p>
+                    <h3 id="activeCourseName">Curso</h3>
+                  </div>
+                </div>
+                <div class="progress-block">
+                  <div class="progress-meta">
+                    <span id="courseProgressLabel">0%</span>
+                    <span>Evidencia acumulada</span>
+                  </div>
+                  <div class="progress-track"><span id="courseProgressBar"></span></div>
+                </div>
+                <div class="route-line" id="moduleList"></div>
+              </aside>
+
+              <section class="panel lesson-panel" id="lessonDetail"></section>
+            </div>
+          </section>
+
+          <section class="view" id="view-evaluacion" aria-labelledby="titulo-evaluacion">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Evaluacion por competencias</p>
+                <h2 id="titulo-evaluacion">Evaluacion integradora</h2>
+              </div>
+              <span class="status-pill" id="quizStatus">Pendiente</span>
+            </div>
+            <div class="split-layout">
+              <form class="panel quiz-panel" id="quizForm"></form>
+              <aside class="panel feedback-panel" id="quizFeedback"></aside>
+            </div>
+          </section>
+
+          <section class="view" id="view-pce" aria-labelledby="titulo-pce">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Paciente clinico educativo</p>
+                <h2 id="titulo-pce">Estacion PCE guiada</h2>
+              </div>
+              <button class="secondary-action" id="restartPce" type="button">Reiniciar PCE</button>
+            </div>
+            <div class="pce-shell">
+              <section class="panel pce-stage" id="pceStage"></section>
+              <aside class="panel pce-feedback" id="pceFeedback"></aside>
+            </div>
+          </section>
+
+          <section class="view" id="view-certificados" aria-labelledby="titulo-certificados">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Certificacion verificable</p>
+                <h2 id="titulo-certificados">Certificados</h2>
+              </div>
+              <button class="primary-action" id="issueCertificate" type="button">Emitir si aplica</button>
+            </div>
+            <div class="split-layout">
+              <section class="certificate-card" id="certificateCard"></section>
+              <aside class="panel verify-panel">
+                <div class="panel-header">
+                  <div>
+                    <p class="eyebrow">Verificacion</p>
+                    <h3>Validar codigo</h3>
+                  </div>
+                </div>
+                <form id="verifyForm" class="verify-form">
+                  <label>
+                    Codigo del certificado
+                    <input id="verifyCode" placeholder="SAN-..." />
+                  </label>
+                  <button class="secondary-action" type="submit">Verificar</button>
+                </form>
+                <div id="verifyResult" class="verify-result"></div>
+              </aside>
+            </div>
+          </section>
+
+          <section class="view" id="view-admin" aria-labelledby="titulo-admin">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Operacion Sananga</p>
+                <h2 id="titulo-admin">Panel administrativo</h2>
+              </div>
+              <button class="secondary-action" id="exportReport" type="button">Generar reporte</button>
+            </div>
+            <div class="admin-grid">
+              <section class="panel" id="adminKpis"></section>
+              <section class="panel" id="enterpriseReport"></section>
+              <section class="panel span-two">
+                <div class="panel-header">
+                  <div>
+                    <p class="eyebrow">Eventos minimos</p>
+                    <h3>Auditoria educativa</h3>
+                  </div>
+                </div>
+                <div class="audit-table" id="auditTable"></div>
+              </section>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
