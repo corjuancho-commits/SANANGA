@@ -32,6 +32,12 @@ La documentacion se enfoca en la experiencia web del LMS: navegacion, vistas, co
 5. `05_roadmap_web_lms.md`  
    Propone la evolucion desde prototipo web estatico hacia plataforma LMS con backend, autenticacion, base de datos e IA gobernada.
 
+6. `06_entorno_desarrollo_local.md`  
+   Documenta herramientas instaladas, ubicacion de la copia local y comandos de ejecucion.
+
+7. `07_algoritmo_formativo_competencia.md`  
+   Define el curso como proceso de competencia guiado por estados, evidencias, PCE, evaluacion y certificacion.
+
 ---
 
 ## Estado actual

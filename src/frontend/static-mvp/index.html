@@ -34,14 +34,6 @@
             <span aria-hidden="true">CU</span>
             Curso
           </button>
-          <button class="nav-item" data-route="evaluacion" type="button">
-            <span aria-hidden="true">EV</span>
-            Evaluacion
-          </button>
-          <button class="nav-item" data-route="pce" type="button">
-            <span aria-hidden="true">PC</span>
-            PCE
-          </button>
           <button class="nav-item" data-route="certificados" type="button">
             <span aria-hidden="true">CE</span>
             Certificados
@@ -82,7 +74,7 @@
                 </p>
                 <div class="hero-actions">
                   <button class="primary-action" data-route="catalogo" type="button">Explorar catalogo</button>
-                  <button class="secondary-action" data-route="evaluacion" type="button">Presentar evaluacion</button>
+                  <button class="secondary-action" data-route="curso" type="button">Ver proceso de competencia</button>
                 </div>
               </div>
             </div>
@@ -155,26 +147,26 @@
           <section class="view" id="view-curso" aria-labelledby="titulo-curso">
             <div class="section-heading">
               <div>
-                <p class="eyebrow">Ruta de aprendizaje</p>
-                <h2 id="titulo-curso">Curso activo</h2>
+                <p class="eyebrow">Algoritmo formativo</p>
+                <h2 id="titulo-curso">Proceso de competencia</h2>
               </div>
-              <button class="secondary-action" data-route="evaluacion" type="button">Ir a evaluacion</button>
             </div>
             <div class="course-workbench">
               <aside class="panel route-panel">
                 <div class="panel-header">
                   <div>
-                    <p class="eyebrow">Progreso</p>
+                    <p class="eyebrow">Competencia</p>
                     <h3 id="activeCourseName">Curso</h3>
                   </div>
                 </div>
                 <div class="progress-block">
                   <div class="progress-meta">
                     <span id="courseProgressLabel">0%</span>
-                    <span>Evidencia acumulada</span>
+                    <span>Dominio de la competencia</span>
                   </div>
                   <div class="progress-track"><span id="courseProgressBar"></span></div>
                 </div>
+                <div class="competency-summary" id="competencySummary"></div>
                 <div class="route-line" id="moduleList"></div>
               </aside>
 
