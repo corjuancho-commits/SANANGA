@@ -93,7 +93,7 @@ El estudiante debe avanzar por rutas de aprendizaje configurables. Algunas rutas
 Ejemplo de progresión general:
 
 1. Diagnóstico inicial.
-2. Microlección conceptual.
+2. Lección/Microlección conceptual.
 3. Actividad de comprensión.
 4. Caso aplicado.
 5. Simulación o PCE.
