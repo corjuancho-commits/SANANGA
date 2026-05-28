@@ -21,28 +21,7 @@
           </span>
         </a>
 
-        <nav class="nav-list">
-          <button class="nav-item is-active" data-route="inicio" type="button">
-            <span aria-hidden="true">IN</span>
-            Inicio
-          </button>
-          <button class="nav-item" data-route="catalogo" type="button">
-            <span aria-hidden="true">CA</span>
-            Catalogo
-          </button>
-          <button class="nav-item" data-route="curso" type="button">
-            <span aria-hidden="true">CU</span>
-            Curso
-          </button>
-          <button class="nav-item" data-route="certificados" type="button">
-            <span aria-hidden="true">CE</span>
-            Certificados
-          </button>
-          <button class="nav-item" data-route="admin" type="button">
-            <span aria-hidden="true">AD</span>
-            Admin
-          </button>
-        </nav>
+        <nav class="nav-list" id="navList"></nav>
 
         <div class="sidebar-status" id="sidebarStatus"></div>
       </aside>
@@ -54,14 +33,110 @@
             <h1 id="viewTitle">Inicio</h1>
           </div>
           <div class="topbar-actions">
+            <div class="role-switcher" id="roleSwitcher"></div>
             <button class="icon-button" id="resetDemo" type="button" aria-label="Reiniciar demo">
               RS
             </button>
+            <button class="secondary-action" id="logoutButton" type="button">Salir</button>
             <button class="primary-action" data-route="curso" type="button">Continuar curso</button>
           </div>
         </header>
 
         <main>
+          <section class="view" id="view-acceso" aria-labelledby="titulo-acceso">
+            <div class="auth-layout">
+              <section class="auth-copy">
+                <p class="eyebrow">Identidad y acceso</p>
+                <h2 id="titulo-acceso">Ingreso seguro al LMS Sananga</h2>
+                <p>
+                  Cada persona puede tener varios roles, pero los roles privilegiados se asignan por invitacion,
+                  autorizacion o revision administrativa. El estudiante no elige permisos sensibles por si mismo.
+                </p>
+                <div class="security-grid">
+                  <article>
+                    <strong>Dato minimo</strong>
+                    <span>Solo se solicita lo necesario para crear cuenta, sesion y perfil academico.</span>
+                  </article>
+                  <article>
+                    <strong>Roles separados</strong>
+                    <span>La sesion identifica a la persona; el rol activo define que puede hacer.</span>
+                  </article>
+                  <article>
+                    <strong>Sin contrasena plana</strong>
+                    <span>El prototipo guarda una huella local de la contrasena, no el texto escrito.</span>
+                  </article>
+                </div>
+              </section>
+
+              <section class="panel auth-panel">
+                <div class="segmented-control auth-tabs" role="tablist" aria-label="Acceso Sananga">
+                  <button class="is-selected" data-auth-tab="login" type="button">Iniciar sesion</button>
+                  <button data-auth-tab="register" type="button">Crear cuenta</button>
+                </div>
+
+                <form class="auth-form" id="loginForm">
+                  <label>
+                    Correo
+                    <input id="loginEmail" type="email" autocomplete="email" required placeholder="persona@ejemplo.com" />
+                  </label>
+                  <label>
+                    Contrasena
+                    <input id="loginPassword" type="password" autocomplete="current-password" required />
+                  </label>
+                  <button class="primary-action" type="submit">Entrar</button>
+                </form>
+
+                <form class="auth-form is-hidden" id="registerForm">
+                  <div class="form-grid">
+                    <label>
+                      Nombre completo
+                      <input id="registerName" autocomplete="name" required placeholder="Nombre y apellido" />
+                    </label>
+                    <label>
+                      Correo
+                      <input id="registerEmail" type="email" autocomplete="email" required placeholder="persona@ejemplo.com" />
+                    </label>
+                  </div>
+                  <div class="form-grid">
+                    <label>
+                      Contrasena
+                      <input id="registerPassword" type="password" autocomplete="new-password" minlength="8" required />
+                    </label>
+                    <label>
+                      Confirmar contrasena
+                      <input id="registerPasswordConfirm" type="password" autocomplete="new-password" minlength="8" required />
+                    </label>
+                  </div>
+                  <label>
+                    Tipo de cuenta inicial
+                    <select id="registerIntent">
+                      <option value="student">Estudiante individual</option>
+                      <option value="enterprise_admin">Representante empresarial</option>
+                      <option value="instructional_designer">Diseno instruccional</option>
+                      <option value="health_expert">Experto tematico en salud</option>
+                      <option value="academic_evaluator">Evaluador academico</option>
+                    </select>
+                  </label>
+                  <label>
+                    Codigo de invitacion o autorizacion
+                    <input id="registerInviteCode" autocomplete="off" placeholder="Opcional para roles asignados" />
+                  </label>
+                  <label>
+                    Organizacion o entidad
+                    <input id="registerOrganization" autocomplete="organization" placeholder="Opcional" />
+                  </label>
+                  <label class="check-row">
+                    <input id="registerTerms" type="checkbox" required />
+                    <span>Acepto terminos, tratamiento de datos y trazabilidad educativa.</span>
+                  </label>
+                  <button class="primary-action" type="submit">Crear cuenta</button>
+                </form>
+
+                <div class="auth-note" id="authResult"></div>
+              </section>
+            </div>
+          </section>
+
           <section class="view is-active" id="view-inicio" aria-labelledby="titulo-inicio">
             <div class="dashboard-hero">
               <img src="assets/sananga-hero.png" alt="Equipo de salud en una sesion de aprendizaje digital" />
@@ -82,38 +157,13 @@
             <div class="metric-grid" id="studentMetrics"></div>
 
             <div class="split-layout">
-              <section class="panel">
+              <section class="panel" id="roleHomePanel">
                 <div class="panel-header">
                   <div>
-                    <p class="eyebrow">Perfil</p>
-                    <h3>Ingreso rapido</h3>
+                    <p class="eyebrow">Rol activo</p>
+                    <h3>Inicio por perfil</h3>
                   </div>
                 </div>
-                <form class="profile-form" id="profileForm">
-                  <label>
-                    Nombre
-                    <input id="profileName" name="name" autocomplete="name" placeholder="Estudiante Sananga" />
-                  </label>
-                  <label>
-                    Correo
-                    <input
-                      id="profileEmail"
-                      name="email"
-                      type="email"
-                      autocomplete="email"
-                      placeholder="estudiante@sananga.edu"
-                    />
-                  </label>
-                  <label>
-                    Rol
-                    <select id="profileRole" name="role">
-                      <option value="Estudiante individual">Estudiante individual</option>
-                      <option value="Administrador empresarial">Administrador empresarial</option>
-                      <option value="Tutor academico">Tutor academico</option>
-                    </select>
-                  </label>
-                  <button class="primary-action" type="submit">Guardar perfil</button>
-                </form>
               </section>
 
               <section class="panel">

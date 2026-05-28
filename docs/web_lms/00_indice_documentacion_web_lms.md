@@ -38,6 +38,9 @@ La documentacion se enfoca en la experiencia web del LMS: navegacion, vistas, co
 7. `07_algoritmo_formativo_competencia.md`  
    Define el curso como proceso de competencia guiado por estados, evidencias, PCE, evaluacion y certificacion.
 
+8. `08_identidad_roles_acceso.md`  
+   Define el flujo de registro, inicio de sesion, rol activo, roles multiples y reglas de seguridad para asignacion de permisos.
+
 ---
 
 ## Estado actual

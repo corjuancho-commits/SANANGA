@@ -273,12 +273,93 @@ const pceSteps = [
   }
 ];
 
+const roleCatalog = {
+  student: {
+    label: "Estudiante individual",
+    group: "Usuario externo",
+    initial: "ES",
+    assignableBySelf: true,
+    permissions: ["learn", "evaluate", "certificate"],
+    summary: "Compra o recibe acceso a cursos, realiza actividades, presenta evaluaciones y descarga certificados propios."
+  },
+  enterprise_admin: {
+    label: "Administrador empresarial",
+    group: "Organizacion",
+    initial: "AE",
+    assignableBySelf: false,
+    permissions: ["organization_users", "license_assignment", "enterprise_reports"],
+    summary: "Gestiona usuarios, cupos, asignaciones y reportes de su empresa sin modificar notas ni contenidos."
+  },
+  instructional_designer: {
+    label: "Disenador instruccional",
+    group: "Academico",
+    initial: "DI",
+    assignableBySelf: false,
+    permissions: ["course_draft", "activities", "rubrics", "pedagogic_analytics"],
+    summary: "Construye cursos, define competencias, actividades, rubricas y propuestas PCE en borrador."
+  },
+  health_expert: {
+    label: "Experto tematico en salud",
+    group: "Academico",
+    initial: "ET",
+    assignableBySelf: false,
+    permissions: ["content_review", "clinical_validation", "bibliography_validation"],
+    summary: "Valida exactitud tecnica, normativa y clinica antes de publicar contenidos."
+  },
+  academic_evaluator: {
+    label: "Evaluador academico",
+    group: "Academico",
+    initial: "EA",
+    assignableBySelf: false,
+    permissions: ["open_attempt_review", "rubric_grading", "correction_request"],
+    summary: "Revisa actividades abiertas, casos y simulaciones que requieren juicio humano."
+  },
+  sananga_admin: {
+    label: "Administrador Sananga",
+    group: "Operacion global",
+    initial: "AS",
+    assignableBySelf: false,
+    permissions: ["global_users", "companies", "courses", "payments", "certificates", "logs", "support"],
+    summary: "Gestiona la operacion global del LMS, usuarios, empresas, cursos, certificados, soporte y analitica."
+  },
+  technical_superadmin: {
+    label: "Superadministrador tecnico",
+    group: "Tecnico restringido",
+    initial: "ST",
+    assignableBySelf: false,
+    permissions: ["platform_settings", "integrations", "technical_logs", "role_management", "maintenance"],
+    summary: "Configura parametros criticos, integraciones, entornos, roles tecnicos y mantenimiento."
+  }
+};
+
+const invitationCodes = {
+  "EMPRESA-SANANGA": "enterprise_admin",
+  "DISENO-SANANGA": "instructional_designer",
+  "EXPERTO-SALUD": "health_expert",
+  "EVALUADOR-SANANGA": "academic_evaluator",
+  "ADMIN-SANANGA": "sananga_admin",
+  "SUPER-TECNICO": "technical_superadmin"
+};
+
+const navItems = [
+  { route: "acceso", label: "Acceso", initial: "AC", public: true },
+  { route: "inicio", label: "Inicio", initial: "IN", permission: "authenticated" },
+  { route: "catalogo", label: "Catalogo", initial: "CA", permission: "learn" },
+  { route: "curso", label: "Curso", initial: "CU", permission: "learn" },
+  { route: "certificados", label: "Certificados", initial: "CE", permission: "certificate" },
+  { route: "admin", label: "Panel", initial: "PA", permission: "admin_surface" }
+];
+
 const defaultState = {
+  session: null,
+  users: [],
+  activeAuthTab: "login",
   profile: {
     name: "Estudiante Sananga",
     email: "estudiante@sananga.edu",
     role: "Estudiante individual"
   },
+  activeRoleId: "student",
   activeCourseId: "seguridad-paciente",
   enrolled: ["seguridad-paciente"],
   completedLessons: [],
@@ -308,15 +389,30 @@ const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 function loadState() {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
-    if (!stored) return structuredClone(defaultState);
-    return { ...structuredClone(defaultState), ...JSON.parse(stored) };
+    if (!stored) return normalizeState(structuredClone(defaultState));
+    return normalizeState({ ...structuredClone(defaultState), ...JSON.parse(stored) });
   } catch {
-    return structuredClone(defaultState);
+    return normalizeState(structuredClone(defaultState));
   }
 }
 
 function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function normalizeState(nextState) {
+  nextState.users = Array.isArray(nextState.users) ? nextState.users : [];
+  nextState.activeAuthTab = nextState.activeAuthTab || "login";
+  nextState.activeRoleId = nextState.activeRoleId || "student";
+  if (nextState.session?.userId) {
+    const user = nextState.users.find((item) => item.id === nextState.session.userId);
+    if (!user) {
+      nextState.session = null;
+    } else if (!user.assignedRoles.includes(nextState.activeRoleId)) {
+      nextState.activeRoleId = user.assignedRoles[0] || "student";
+    }
+  }
+  return nextState;
 }
 
 function escapeHtml(value) {
@@ -326,6 +422,84 @@ function escapeHtml(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
+}
+
+function generateId(prefix) {
+  if (globalThis.crypto?.randomUUID) return `${prefix}_${globalThis.crypto.randomUUID()}`;
+  return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2)}`;
+}
+
+function makeSalt() {
+  const bytes = new Uint8Array(16);
+  if (globalThis.crypto?.getRandomValues) {
+    globalThis.crypto.getRandomValues(bytes);
+    return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+  }
+  return Math.random().toString(36).slice(2);
+}
+
+async function hashSecret(secret, salt) {
+  const value = `${salt}:${secret}`;
+  if (globalThis.crypto?.subtle) {
+    const encoded = new TextEncoder().encode(value);
+    const digest = await globalThis.crypto.subtle.digest("SHA-256", encoded);
+    return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
+  }
+  let hash = 0;
+  for (let index = 0; index < value.length; index += 1) {
+    hash = (hash << 5) - hash + value.charCodeAt(index);
+    hash |= 0;
+  }
+  return `demo-${Math.abs(hash).toString(16)}`;
+}
+
+function activeUser() {
+  if (!state.session?.userId) return null;
+  return state.users.find((user) => user.id === state.session.userId) || null;
+}
+
+function isAuthenticated() {
+  return Boolean(activeUser());
+}
+
+function currentRoleId() {
+  const user = activeUser();
+  if (!user) return null;
+  return user.assignedRoles.includes(state.activeRoleId) ? state.activeRoleId : user.assignedRoles[0];
+}
+
+function currentRole() {
+  return roleCatalog[currentRoleId()] || null;
+}
+
+function hasPermission(permission) {
+  if (permission === "authenticated") return isAuthenticated();
+  const role = currentRole();
+  if (!role) return false;
+  if (permission === "admin_surface") {
+    return role.permissions.some((item) =>
+      [
+        "organization_users",
+        "course_draft",
+        "content_review",
+        "open_attempt_review",
+        "global_users",
+        "platform_settings"
+      ].includes(item)
+    );
+  }
+  return role.permissions.includes(permission);
+}
+
+function canVisit(route) {
+  const item = navItems.find((navItem) => navItem.route === route);
+  if (!item) return true;
+  if (item.public) return true;
+  return hasPermission(item.permission);
+}
+
+function loginRequiredRoute(route) {
+  return route !== "acceso" && !isAuthenticated();
 }
 
 function activeCourse() {
@@ -466,12 +640,20 @@ function showToast(message) {
 }
 
 function setView(route) {
+  if (loginRequiredRoute(route)) {
+    showToast("Inicia sesion para acceder a la plataforma.");
+    route = "acceso";
+  } else if (!canVisit(route)) {
+    showToast("Tu rol activo no tiene permiso para esta vista.");
+    route = "inicio";
+  }
   $$(".view").forEach((view) => view.classList.remove("is-active"));
   $(`#view-${route}`)?.classList.add("is-active");
   $$(".nav-item").forEach((button) => {
     button.classList.toggle("is-active", button.dataset.route === route);
   });
   const titles = {
+    acceso: "Acceso",
     inicio: "Inicio",
     catalogo: "Catalogo",
     curso: "Curso activo",
@@ -486,11 +668,64 @@ function setView(route) {
 }
 
 function renderSidebar() {
+  const user = activeUser();
+  const role = currentRole();
   $("#sidebarStatus").innerHTML = `
-    <strong>${escapeHtml(state.profile.name)}</strong>
-    <span>${escapeHtml(state.profile.role)}</span>
-    <span>${competencyProgressValue()}% del proceso de competencia</span>
+    <strong>${escapeHtml(user?.name || "Visitante Sananga")}</strong>
+    <span>${escapeHtml(role?.label || "Sesion no iniciada")}</span>
+    <span>${isAuthenticated() ? `${competencyProgressValue()}% del proceso de competencia` : "Registrate o inicia sesion para continuar"}</span>
   `;
+}
+
+function renderNav() {
+  const activeRoute = location.hash.replace("#", "") || (isAuthenticated() ? "inicio" : "acceso");
+  $("#navList").innerHTML = navItems
+    .filter((item) => item.public || isAuthenticated())
+    .map((item) => {
+      const locked = !item.public && !canVisit(item.route);
+      return `
+        <button class="nav-item ${activeRoute === item.route ? "is-active" : ""} ${
+          locked ? "is-disabled" : ""
+        }" data-route="${item.route}" type="button" ${locked ? "aria-disabled=\"true\"" : ""}>
+          <span aria-hidden="true">${item.initial}</span>
+          ${escapeHtml(item.label)}
+        </button>
+      `;
+    })
+    .join("");
+}
+
+function renderRoleSwitcher() {
+  const user = activeUser();
+  const container = $("#roleSwitcher");
+  $("#logoutButton").style.display = user ? "" : "none";
+  if (!user) {
+    container.innerHTML = "";
+    return;
+  }
+
+  container.innerHTML = `
+    <label class="role-select-label">
+      Rol activo
+      <select id="activeRoleSelect">
+        ${user.assignedRoles
+          .map((roleId) => `<option value="${roleId}" ${currentRoleId() === roleId ? "selected" : ""}>${escapeHtml(roleCatalog[roleId]?.label || roleId)}</option>`)
+          .join("")}
+      </select>
+    </label>
+  `;
+}
+
+function renderAuth() {
+  const isLogin = state.activeAuthTab === "login";
+  $("[data-auth-tab='login']").classList.toggle("is-selected", isLogin);
+  $("[data-auth-tab='register']").classList.toggle("is-selected", !isLogin);
+  $("#loginForm").classList.toggle("is-hidden", !isLogin);
+  $("#registerForm").classList.toggle("is-hidden", isLogin);
+  const user = activeUser();
+  $("#authResult").innerHTML = user
+    ? `<strong>Sesion activa:</strong> ${escapeHtml(user.name)} con rol ${escapeHtml(currentRole()?.label || "sin rol")}.`
+    : `Los roles privilegiados requieren invitacion o quedan como solicitud pendiente. En produccion, esto debe vivir en backend con MFA y auditoria.`;
 }
 
 function renderMetrics() {
@@ -498,9 +733,9 @@ function renderMetrics() {
   const certificateState = state.certificate ? "Emitido" : certificateAvailable(course) ? "Listo" : "Bloqueado";
   const current = currentCompetencyState(course);
   const metrics = [
-    { value: state.enrolled.length, label: "curso matriculado" },
+    { value: isAuthenticated() ? state.enrolled.length : 0, label: "curso matriculado" },
     { value: `${competencyProgressValue(course)}%`, label: "dominio de competencia" },
-    { value: current?.title || "Sin estado", label: "estado sugerido" },
+    { value: isAuthenticated() ? current?.title || "Sin estado" : "Inicia sesion", label: "estado sugerido" },
     { value: certificateState, label: "estado certificado" }
   ];
 
@@ -532,10 +767,96 @@ function renderEvents() {
     : `<div class="empty-state">Aun no hay eventos registrados.</div>`;
 }
 
-function renderProfileForm() {
-  $("#profileName").value = state.profile.name;
-  $("#profileEmail").value = state.profile.email;
-  $("#profileRole").value = state.profile.role;
+function renderRoleHome() {
+  const user = activeUser();
+  const role = currentRole();
+  const panel = $("#roleHomePanel");
+  if (!user || !role) {
+    panel.innerHTML = `
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Acceso requerido</p>
+          <h3>Inicia sesion para ver tu inicio</h3>
+        </div>
+      </div>
+      <p class="muted-copy">El inicio cambia segun el rol activo asignado a la persona.</p>
+      <button class="primary-action" data-route="acceso" type="button">Ir a acceso</button>
+    `;
+    return;
+  }
+
+  const pending = user.pendingRoleRequests || [];
+  const roleCards = {
+    student: [
+      ["Cursos activos", state.enrolled.length],
+      ["Competencia actual", `${competencyProgressValue()}%`],
+      ["Certificados", state.certificate ? 1 : 0]
+    ],
+    enterprise_admin: [
+      ["Usuarios empresa", 24],
+      ["Licencias disponibles", 18],
+      ["Alertas de avance", 3]
+    ],
+    instructional_designer: [
+      ["Cursos en borrador", 4],
+      ["Rubricas por cerrar", 7],
+      ["PCE propuestos", 2]
+    ],
+    health_expert: [
+      ["Modulos por revisar", 5],
+      ["Observaciones abiertas", 9],
+      ["Publicaciones listas", 1]
+    ],
+    academic_evaluator: [
+      ["Intentos pendientes", 12],
+      ["Rubricas activas", 3],
+      ["Correcciones solicitadas", 4]
+    ],
+    sananga_admin: [
+      ["Usuarios totales", 128],
+      ["Empresas activas", 6],
+      ["Tickets soporte", 11]
+    ],
+    technical_superadmin: [
+      ["Integraciones", 5],
+      ["Logs criticos", 0],
+      ["Entornos", 3]
+    ]
+  };
+
+  panel.innerHTML = `
+    <div class="panel-header">
+      <div>
+        <p class="eyebrow">${escapeHtml(role.group)}</p>
+        <h3>${escapeHtml(role.label)}</h3>
+      </div>
+      <span class="status-pill">${escapeHtml(role.initial)}</span>
+    </div>
+    <p class="muted-copy">${escapeHtml(role.summary)}</p>
+    <div class="role-dashboard-grid">
+      ${(roleCards[currentRoleId()] || [])
+        .map(
+          ([label, value]) => `
+          <article class="role-dashboard-card">
+            <strong>${escapeHtml(value)}</strong>
+            <span>${escapeHtml(label)}</span>
+          </article>
+        `
+        )
+        .join("")}
+    </div>
+    <div class="permissions-box">
+      <strong>Permisos activos</strong>
+      <div class="tag-list">
+        ${role.permissions.map((permission) => `<span class="tag">${escapeHtml(permission)}</span>`).join("")}
+      </div>
+    </div>
+    ${
+      pending.length
+        ? `<div class="feedback-box"><strong>Roles solicitados pendientes</strong><p>${pending.map((roleId) => roleCatalog[roleId]?.label || roleId).join(", ")}</p></div>`
+        : ""
+    }
+  `;
 }
 
 function renderCatalog() {
@@ -971,10 +1292,13 @@ function formatDate(value) {
 }
 
 function renderAll() {
+  renderNav();
+  renderAuth();
+  renderRoleSwitcher();
   renderSidebar();
   renderMetrics();
   renderEvents();
-  renderProfileForm();
+  renderRoleHome();
   renderCatalog();
   renderCourse();
   renderQuiz();
@@ -996,6 +1320,135 @@ function enrollCourse(courseId) {
   saveState();
   showToast("Curso activado.");
   setView("curso");
+}
+
+function syncProfileFromUser(user) {
+  const role = roleCatalog[currentRoleId()] || roleCatalog[user.assignedRoles[0]] || roleCatalog.student;
+  state.profile = {
+    name: user.name,
+    email: user.email,
+    role: role.label
+  };
+}
+
+async function registerUser(event) {
+  event.preventDefault();
+  const name = $("#registerName").value.trim();
+  const email = $("#registerEmail").value.trim().toLowerCase();
+  const password = $("#registerPassword").value;
+  const confirm = $("#registerPasswordConfirm").value;
+  const intent = $("#registerIntent").value;
+  const inviteCode = $("#registerInviteCode").value.trim().toUpperCase();
+  const organization = $("#registerOrganization").value.trim();
+
+  if (state.users.some((user) => user.email === email)) {
+    showToast("Ya existe una cuenta con este correo.");
+    return;
+  }
+
+  if (password !== confirm) {
+    showToast("Las contrasenas no coinciden.");
+    return;
+  }
+
+  if (password.length < 8) {
+    showToast("La contrasena debe tener minimo 8 caracteres.");
+    return;
+  }
+
+  const assignedRoles = ["student"];
+  const pendingRoleRequests = [];
+  const invitedRole = invitationCodes[inviteCode];
+
+  if (invitedRole) {
+    assignedRoles.push(invitedRole);
+  } else if (intent !== "student") {
+    pendingRoleRequests.push(intent);
+  }
+
+  const salt = makeSalt();
+  const passwordHash = await hashSecret(password, salt);
+  const user = {
+    id: generateId("usr"),
+    name,
+    email,
+    organization,
+    assignedRoles: Array.from(new Set(assignedRoles)),
+    pendingRoleRequests,
+    salt,
+    passwordHash,
+    emailVerified: false,
+    createdAt: new Date().toISOString(),
+    lastLoginAt: new Date().toISOString()
+  };
+
+  state.users.push(user);
+  state.session = {
+    userId: user.id,
+    startedAt: new Date().toISOString(),
+    expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 8).toISOString()
+  };
+  state.activeRoleId = invitedRole || "student";
+  syncProfileFromUser(user);
+  addEvent(
+    "usuario_registrado",
+    invitedRole
+      ? `Cuenta creada para ${email}; rol asignado por invitacion: ${roleCatalog[invitedRole].label}.`
+      : pendingRoleRequests.length
+        ? `Cuenta creada para ${email}; rol solicitado pendiente: ${roleCatalog[intent].label}.`
+        : `Cuenta creada para ${email} como estudiante.`
+  );
+  saveState();
+  event.currentTarget.reset();
+  showToast("Cuenta creada. Sesion iniciada.");
+  setView("inicio");
+}
+
+async function loginUser(event) {
+  event.preventDefault();
+  const email = $("#loginEmail").value.trim().toLowerCase();
+  const password = $("#loginPassword").value;
+  const user = state.users.find((item) => item.email === email);
+
+  if (!user) {
+    addEvent("login_fallido", `Intento de acceso con correo no registrado: ${email}.`);
+    saveState();
+    showToast("No existe una cuenta con ese correo.");
+    return;
+  }
+
+  const passwordHash = await hashSecret(password, user.salt);
+  if (passwordHash !== user.passwordHash) {
+    user.failedAttempts = (user.failedAttempts || 0) + 1;
+    addEvent("login_fallido", `Contrasena incorrecta para ${email}. Intentos: ${user.failedAttempts}.`);
+    saveState();
+    showToast(user.failedAttempts >= 3 ? "Demasiados intentos. En produccion se bloquearia temporalmente." : "Contrasena incorrecta.");
+    return;
+  }
+
+  user.failedAttempts = 0;
+  user.lastLoginAt = new Date().toISOString();
+  state.session = {
+    userId: user.id,
+    startedAt: new Date().toISOString(),
+    expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 8).toISOString()
+  };
+  state.activeRoleId = user.assignedRoles.includes(state.activeRoleId) ? state.activeRoleId : user.assignedRoles[0];
+  syncProfileFromUser(user);
+  addEvent("login_exitoso", `Sesion iniciada para ${email} con rol ${currentRole()?.label}.`);
+  saveState();
+  event.currentTarget.reset();
+  showToast("Sesion iniciada.");
+  setView("inicio");
+}
+
+function logoutUser() {
+  const user = activeUser();
+  state.session = null;
+  addEvent("logout", `Sesion cerrada${user ? ` para ${user.email}` : ""}.`);
+  saveState();
+  showToast("Sesion cerrada.");
+  setView("acceso");
 }
 
 function submitQuiz(event) {
@@ -1105,10 +1558,17 @@ function exportReport() {
 }
 
 function resetDemo() {
-  state = structuredClone(defaultState);
+  const identity = {
+    session: state.session,
+    users: state.users,
+    activeRoleId: state.activeRoleId,
+    activeAuthTab: state.activeAuthTab,
+    profile: state.profile
+  };
+  state = { ...structuredClone(defaultState), ...identity };
   saveState();
-  showToast("Demo reiniciada.");
-  setView("inicio");
+  showToast("Progreso demo reiniciado; identidad conservada.");
+  setView(isAuthenticated() ? "inicio" : "acceso");
 }
 
 function bindEvents() {
@@ -1171,24 +1631,39 @@ function bindEvents() {
     }
   });
 
-  $$(".segmented-control button").forEach((button) => {
+  $$("[data-filter]").forEach((button) => {
     button.addEventListener("click", () => {
       activeFilter = button.dataset.filter;
-      $$(".segmented-control button").forEach((item) => item.classList.toggle("is-selected", item === button));
+      $$("[data-filter]").forEach((item) => item.classList.toggle("is-selected", item === button));
       renderCatalog();
     });
   });
 
-  $("#profileForm").addEventListener("submit", (event) => {
-    event.preventDefault();
-    state.profile = {
-      name: $("#profileName").value.trim() || "Estudiante Sananga",
-      email: $("#profileEmail").value.trim() || "estudiante@sananga.edu",
-      role: $("#profileRole").value
-    };
-    addEvent("perfil_actualizado", `Perfil guardado para ${state.profile.email}.`);
+  $$("[data-auth-tab]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.activeAuthTab = button.dataset.authTab;
+      saveState();
+      renderAuth();
+    });
+  });
+
+  $("#registerForm").addEventListener("submit", registerUser);
+  $("#loginForm").addEventListener("submit", loginUser);
+  $("#logoutButton").addEventListener("click", logoutUser);
+
+  document.addEventListener("change", (event) => {
+    if (event.target.id !== "activeRoleSelect") return;
+    const user = activeUser();
+    if (!user || !user.assignedRoles.includes(event.target.value)) {
+      showToast("Rol no asignado a esta persona.");
+      renderRoleSwitcher();
+      return;
+    }
+    state.activeRoleId = event.target.value;
+    syncProfileFromUser(user);
+    addEvent("rol_activo_cambiado", `Rol activo: ${currentRole()?.label}.`);
     saveState();
-    showToast("Perfil guardado.");
+    showToast("Rol activo actualizado.");
     renderAll();
   });
 
