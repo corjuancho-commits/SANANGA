@@ -44,6 +44,9 @@ La documentacion se enfoca en la experiencia web del LMS: navegacion, vistas, co
 9. `09_identidad_institucional_y_acceso_comercial.md`  
    Define narrativa institucional, propuesta de valor, publico objetivo y estructura comercial minimalista de la pagina de acceso.
 
+10. `10_sintesis_fuentes_proyecto_sananga.md`
+    Resume los chats y fuentes revisadas del proyecto ChatGPT SANANGA y las decisiones trasladadas al prototipo.
+
 ---
 
 ## Estado actual
@@ -61,6 +64,8 @@ El MVP web actual cubre:
 - Emision y verificacion local de certificado.
 - Panel administrativo basico.
 - Registro de eventos de aprendizaje.
+- Pagina publica de acceso con identidad institucional, portafolio, buscador, filtros y fichas comerciales de cursos.
+- Sintesis documental del proyecto Sananga para orientar marketing, producto y siguientes componentes.
 
 ---
 

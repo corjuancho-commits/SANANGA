@@ -14,6 +14,7 @@ const courses = [
     contents: ["Cultura justa", "Eventos e incidentes", "Barreras de seguridad", "Debriefing"],
     outcomes: ["Detectar riesgos", "Escalar oportunamente", "Registrar evidencia", "Demostrar competencia"],
     businessValue: "Reduce brechas de cumplimiento y entrega evidencia auditable para procesos internos.",
+    corporateHook: "Ideal para equipos asistenciales que necesitan pasar de capacitaciones aisladas a procesos demostrables.",
     includes: ["Certificado verificable", "Trazabilidad de avance", "Reporte individual", "PCE obligatorio"],
     duration: "6 horas",
     level: "Basico",
@@ -192,6 +193,7 @@ const courses = [
     contents: ["Comunicacion empatica", "Momentos de verdad", "Trato digno", "Cierre de interacciones"],
     outcomes: ["Mejorar comunicacion", "Reconocer barreras de trato", "Aplicar debriefing", "Humanizar la atencion"],
     businessValue: "Aporta a cultura de servicio, satisfaccion del usuario y coherencia institucional.",
+    corporateHook: "Pensado para instituciones que quieren mejorar experiencia de usuario sin depender de charlas genericas.",
     includes: ["Certificado", "Casos aplicados", "Reporte empresarial", "Actividades reflexivas"],
     duration: "4 horas",
     level: "Intermedio",
@@ -213,6 +215,7 @@ const courses = [
     contents: ["Carga emocional", "Senales de alerta", "Redes de apoyo", "Practicas de autocuidado"],
     outcomes: ["Reconocer riesgo", "Activar apoyo", "Crear plan de autocuidado", "Sostener habitos"],
     businessValue: "Favorece bienestar laboral y prevencion temprana de agotamiento en equipos.",
+    corporateHook: "Puede iniciar como experiencia sin costo para sensibilizar lideres y trabajadores sobre bienestar real.",
     includes: ["Certificado", "Plan individual", "Reporte simple", "Recursos practicos"],
     duration: "3 horas",
     level: "Basico",
@@ -220,8 +223,207 @@ const courses = [
       "Ruta movil para reconocer carga emocional, activar redes de apoyo y sostener practicas de autocuidado laboral.",
     tags: ["Movil", "Bienestar", "Reporte simple"],
     modules: []
+  },
+  {
+    id: "bienestar-corporativo",
+    title: "Bienestar corporativo basado en evidencia",
+    category: "bienestar",
+    topic: "Bienestar corporativo",
+    trainingType: "Programa empresarial",
+    price: 249000,
+    currency: "COP",
+    audience: "Lideres de bienestar, Talento Humano, SST, gerentes de pymes y responsables de cultura organizacional.",
+    methods: ["Diagnostico rapido", "Clase aplicada", "Plantillas descargables", "Plan de accion"],
+    contents: ["Bienestar como sistema", "Modelos internacionales", "Indicadores de ausentismo", "Plan anual de bienestar"],
+    outcomes: ["Priorizar riesgos", "Disenar intervenciones", "Medir impacto", "Sostener seguimiento"],
+    businessValue: "Ayuda a ordenar bienestar, salud y productividad en un sistema medible, no en actividades dispersas.",
+    corporateHook: "Funciona como producto premium para lideres y como puerta de entrada a consultoria empresarial.",
+    includes: ["Plantillas", "Certificado", "Diagnostico inicial", "Propuesta de plan de bienestar"],
+    duration: "8 horas",
+    level: "Intermedio",
+    summary:
+      "Curso para estructurar estrategias de bienestar con evidencia, indicadores y acciones aplicables a empresas reales.",
+    tags: ["Empresas", "Bienestar", "Evidencia"],
+    modules: []
+  },
+  {
+    id: "salud-publica-eps",
+    title: "Salud publica y uso adecuado del sistema de salud",
+    category: "bienestar",
+    topic: "Salud publica",
+    trainingType: "Curso certificable",
+    price: 119000,
+    currency: "COP",
+    audience: "Trabajadores, lideres de bienestar, comites de convivencia, SST y equipos de gestion humana.",
+    methods: ["Microlecciones", "Rutas de atencion", "Casos cotidianos", "Recursos descargables"],
+    contents: ["Rutas de promocion y prevencion", "Uso de EPS", "Signos de alarma", "Derechos y deberes en salud"],
+    outcomes: ["Consultar oportunamente", "Evitar urgencias innecesarias", "Usar rutas preventivas", "Orientar al equipo"],
+    businessValue: "Reduce desconocimiento sobre rutas de atencion y apoya decisiones tempranas de cuidado.",
+    corporateHook: "Diferencia a Sananga al llevar salud publica practica al lugar de trabajo.",
+    includes: ["Guia de rutas", "Certificado", "Checklist de signos de alarma", "Reporte de avance"],
+    duration: "4 horas",
+    level: "Basico",
+    summary:
+      "Ruta practica para que trabajadores comprendan como usar mejor los servicios de salud y reconocer alertas tempranas.",
+    tags: ["Salud publica", "Autocuidado", "Empresas"],
+    modules: []
+  },
+  {
+    id: "primeros-auxilios-laborales",
+    title: "Primeros auxilios esenciales para entornos laborales",
+    category: "normativo",
+    topic: "Primeros auxilios",
+    trainingType: "Taller practico",
+    price: 159000,
+    currency: "COP",
+    audience: "Brigadas, supervisores, trabajadores operativos y equipos que requieren respuesta inicial segura.",
+    methods: ["Demostracion", "Casos breves", "Simulacion guiada", "Rubrica de desempeno"],
+    contents: ["Valoracion inicial", "Caidas y desmayos", "Convulsiones", "Activacion de emergencias"],
+    outcomes: ["Responder con seguridad", "Priorizar acciones", "Activar ayuda", "Registrar evidencia"],
+    businessValue: "Aporta preparacion practica y evidencia de entrenamiento para planes internos de emergencia.",
+    corporateHook: "Puede combinarse con sesiones presenciales o PCE para validar desempeno real.",
+    includes: ["Certificado", "Rubrica", "Simulacion", "Reporte empresarial"],
+    duration: "5 horas",
+    level: "Basico",
+    summary:
+      "Taller certificable para actuar ante situaciones frecuentes mientras llega apoyo profesional.",
+    tags: ["Taller", "Simulacion", "Brigadas"],
+    modules: []
+  },
+  {
+    id: "programas-sectoriales",
+    title: "Programas sectoriales de salud para empresas",
+    category: "bienestar",
+    topic: "Programas sectoriales",
+    trainingType: "Consultoria formativa",
+    price: 349000,
+    currency: "COP",
+    audience: "Empresas de alimentos, salud, educacion, servicios, transporte y operaciones con riesgos especificos.",
+    methods: ["Lectura de contexto", "Mapa de riesgos", "Ruta formativa", "Reporte de recomendaciones"],
+    contents: ["Diagnostico sectorial", "Habitos y riesgos", "Cultura interna", "Plan formativo por cohortes"],
+    outcomes: ["Alinear contenidos", "Definir cohortes", "Priorizar competencias", "Medir avance"],
+    businessValue: "Permite adaptar Sananga a la realidad de cada organizacion antes de escalar licencias.",
+    corporateHook: "Puerta de entrada para contratos empresariales con piloto, seguimiento y renovacion.",
+    includes: ["Sesion de descubrimiento", "Mapa de contenidos", "Propuesta empresarial", "Indicadores base"],
+    duration: "A medida",
+    level: "Avanzado",
+    summary:
+      "Acompanamiento para convertir necesidades de salud y bienestar en una ruta formativa por sector.",
+    tags: ["Consultoria", "Empresas", "Sectorial"],
+    modules: []
   }
 ];
+
+courses.forEach((course) => {
+  if (course.competency) return;
+  const conceptLessonId = `${course.id}-concepto`;
+  const practiceLessonId = `${course.id}-practica`;
+  const firstContent = course.contents[0] || course.topic;
+  const firstOutcome = course.outcomes[0] || "Aplicar lo aprendido";
+
+  course.competency = {
+    name: `Aplicar ${course.title.toLowerCase()} en un contexto laboral real`,
+    algorithm:
+      "Ruta adaptativa base: diagnostico, dominio conceptual, practica aplicada, evaluacion integradora y certificacion.",
+    certificationRule:
+      "Certifica cuando completa evidencias del curso y supera la evaluacion integradora con minimo 80%.",
+    states: [
+      {
+        id: "state-diagnostico",
+        type: "diagnostic",
+        title: "Encuadre y diagnostico",
+        skill: "Punto de partida",
+        objective: "Comprender la competencia, la audiencia, los criterios de aprobacion y el valor practico del curso.",
+        adaptiveRule: "Si el estudiante declara poca experiencia, el sistema recomienda iniciar por fundamentos."
+      },
+      {
+        id: "state-conceptual",
+        type: "learning",
+        title: "Dominio conceptual",
+        skill: firstContent,
+        objective: `Reconocer conceptos clave de ${course.topic.toLowerCase()} y relacionarlos con decisiones cotidianas.`,
+        lessonIds: [conceptLessonId],
+        adaptiveRule: "Si la evidencia conceptual es debil, se recomienda repasar recursos y ejemplos antes de avanzar."
+      },
+      {
+        id: "state-procedimental",
+        type: "learning",
+        title: "Aplicacion practica",
+        skill: firstOutcome,
+        objective: "Convertir el aprendizaje en una accion observable, documentada y transferible al trabajo.",
+        lessonIds: [practiceLessonId],
+        adaptiveRule: "Si la evidencia aplicada no es clara, el sistema solicita una nueva version con retroalimentacion."
+      },
+      {
+        id: "state-evaluacion",
+        type: "evaluation",
+        title: "Evaluacion integradora",
+        skill: "Integracion de competencia",
+        objective: "Demostrar comprension, juicio y aplicacion de la competencia del curso.",
+        minScore: 80,
+        adaptiveRule: "Si no aprueba, el sistema recomienda el estado de menor dominio."
+      },
+      {
+        id: "state-certificacion",
+        type: "certificate",
+        title: "Certificacion verificable",
+        skill: "Competencia demostrada",
+        objective: "Emitir certificado solamente cuando las evidencias y la evaluacion estan completas.",
+        adaptiveRule: "Permanece bloqueado hasta cumplir evidencias y evaluacion."
+      }
+    ]
+  };
+
+  course.modules = course.modules?.length
+    ? course.modules
+    : [
+        {
+          title: "Fundamentos",
+          lessons: [
+            {
+              id: conceptLessonId,
+              title: `Fundamentos de ${course.topic.toLowerCase()}`,
+              minutes: 14,
+              evidence: `Mapa breve de conceptos y decisiones clave sobre ${course.topic.toLowerCase()}.`,
+              body: `Sananga aborda ${course.topic.toLowerCase()} con enfoque practico, preventivo y aplicable a la realidad del trabajador.`
+            }
+          ]
+        },
+        {
+          title: "Aplicacion",
+          lessons: [
+            {
+              id: practiceLessonId,
+              title: "Caso aplicado al trabajo",
+              minutes: 18,
+              evidence: "Respuesta guiada a un caso y accion de mejora documentada.",
+              body: `El aprendizaje se convierte en accion cuando el estudiante puede decidir, justificar y registrar una mejora relacionada con ${course.topic.toLowerCase()}.`
+            }
+          ]
+        }
+      ];
+
+  course.questions = [
+    {
+      text: `Que busca certificar el curso ${course.title}?`,
+      options: ["Asistencia pasiva", "Competencia demostrada", "Solo lectura de contenidos"],
+      answer: 1,
+      feedback: "Sananga certifica aprendizaje demostrado mediante evidencias y evaluacion."
+    },
+    {
+      text: "Que elemento hace mas util el aprendizaje para empresas?",
+      options: ["Evidencia y reporte", "Unicamente publicidad", "Eliminar evaluaciones"],
+      answer: 0,
+      feedback: "La evidencia permite conectar aprendizaje con bienestar, SG-SST y toma de decisiones."
+    },
+    {
+      text: "Cuando debe emitirse el certificado?",
+      options: ["Al ingresar al curso", "Al completar criterios de aprobacion", "Al ver la ficha tecnica"],
+      answer: 1,
+      feedback: "El certificado se emite cuando se cumplen evidencias y evaluacion."
+    }
+  ];
+});
 
 const pceSteps = [
   {
@@ -583,7 +785,8 @@ function allLessons(course = activeCourse()) {
 function progressValue() {
   const lessons = allLessons();
   if (!lessons.length) return 0;
-  return Math.round((state.completedLessons.length / lessons.length) * 100);
+  const completed = lessons.filter((lesson) => state.completedLessons.includes(lesson.id)).length;
+  return Math.round((completed / lessons.length) * 100);
 }
 
 function competencyStates(course = activeCourse()) {
@@ -871,7 +1074,12 @@ function renderPublicCatalog() {
         <strong>Resultados esperados</strong>
         <ul>${selected.outcomes.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
       </div>
+      <div class="detail-block">
+        <strong>Incluye</strong>
+        <ul>${selected.includes.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+      </div>
       <div class="feedback-box"><strong>Valor para empresas</strong><p>${escapeHtml(selected.businessValue)}</p></div>
+      <div class="feedback-box"><strong>Gancho comercial</strong><p>${escapeHtml(selected.corporateHook || "Puede integrarse a una ruta empresarial de bienestar, salud publica y competencias verificables.")}</p></div>
       <div class="lesson-actions">
         <button class="primary-action" data-register-course="${selected.id}" type="button">Registrarme</button>
         <button class="secondary-action" data-payment-course="${selected.id}" type="button">Pagar curso</button>
