@@ -41,6 +41,9 @@ La documentacion se enfoca en la experiencia web del LMS: navegacion, vistas, co
 8. `08_identidad_roles_acceso.md`  
    Define el flujo de registro, inicio de sesion, rol activo, roles multiples y reglas de seguridad para asignacion de permisos.
 
+9. `09_identidad_institucional_y_acceso_comercial.md`  
+   Define narrativa institucional, propuesta de valor, publico objetivo y estructura comercial minimalista de la pagina de acceso.
+
 ---
 
 ## Estado actual

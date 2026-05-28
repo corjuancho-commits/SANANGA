@@ -47,23 +47,27 @@
             <div class="auth-layout">
               <section class="auth-copy">
                 <p class="eyebrow">Identidad y acceso</p>
-                <h2 id="titulo-acceso">Ingreso seguro al LMS Sananga</h2>
+                <h2 id="titulo-acceso">SANANGA</h2>
                 <p>
-                  Cada persona puede tener varios roles, pero los roles privilegiados se asignan por invitacion,
-                  autorizacion o revision administrativa. El estudiante no elige permisos sensibles por si mismo.
+                  Plataforma colombiana de formacion en salud que convierte aprendizaje en evidencia,
+                  evidencia en competencia y competencia en certificacion verificable.
                 </p>
+                <div class="hero-actions">
+                  <button class="primary-action" data-scroll-target="publicCatalog" type="button">Ver cursos</button>
+                  <button class="secondary-action" data-auth-tab="register" type="button">Crear cuenta</button>
+                </div>
                 <div class="security-grid">
                   <article>
-                    <strong>Dato minimo</strong>
-                    <span>Solo se solicita lo necesario para crear cuenta, sesion y perfil academico.</span>
+                    <strong>Para personas</strong>
+                    <span>Rutas cortas, evaluacion real, PCE cuando aplica y certificados verificables.</span>
                   </article>
                   <article>
-                    <strong>Roles separados</strong>
-                    <span>La sesion identifica a la persona; el rol activo define que puede hacer.</span>
+                    <strong>Para empresas</strong>
+                    <span>Licencias, asignacion de cursos, seguimiento de avance y reportes de cumplimiento.</span>
                   </article>
                   <article>
-                    <strong>Sin contrasena plana</strong>
-                    <span>El prototipo guarda una huella local de la contrasena, no el texto escrito.</span>
+                    <strong>Con trazabilidad</strong>
+                    <span>No certifica asistencia: certifica competencia demostrada con eventos auditables.</span>
                   </article>
                 </div>
               </section>
@@ -135,6 +139,62 @@
                 <div class="auth-note" id="authResult"></div>
               </section>
             </div>
+
+            <section class="access-section">
+              <div class="section-heading">
+                <div>
+                  <p class="eyebrow">Quienes somos</p>
+                  <h2>Formacion continua en salud con evidencia real</h2>
+                </div>
+              </div>
+              <div class="value-grid">
+                <article>
+                  <strong>Que hacemos</strong>
+                  <p>Disenamos cursos, simulaciones y certificaciones para talento humano en salud, bienestar y organizaciones.</p>
+                </article>
+                <article>
+                  <strong>Como lo hacemos</strong>
+                  <p>Combinamos microaprendizaje, evaluacion por competencias, PCE, IA gobernada y analitica educativa.</p>
+                </article>
+                <article>
+                  <strong>Por que importa</strong>
+                  <p>Un certificado debe tener detras una ruta formativa trazable, no solo consumo pasivo de contenidos.</p>
+                </article>
+              </div>
+            </section>
+
+            <section class="access-section" id="publicCatalog">
+              <div class="section-heading">
+                <div>
+                  <p class="eyebrow">Oferta formativa</p>
+                  <h2>Cursos para personas y empresas</h2>
+                </div>
+              </div>
+
+              <div class="market-tools">
+                <label>
+                  Buscar curso
+                  <input id="publicCourseSearch" placeholder="Seguridad, bienestar, humanizacion..." />
+                </label>
+                <label>
+                  Tema
+                  <select id="publicTopicFilter"></select>
+                </label>
+                <label>
+                  Nivel
+                  <select id="publicLevelFilter"></select>
+                </label>
+                <label>
+                  Tipo
+                  <select id="publicTypeFilter"></select>
+                </label>
+              </div>
+
+              <div class="market-layout">
+                <div class="public-course-grid" id="publicCourseGrid"></div>
+                <aside class="panel course-detail-panel" id="publicCourseDetail"></aside>
+              </div>
+            </section>
           </section>
 
           <section class="view is-active" id="view-inicio" aria-labelledby="titulo-inicio">

@@ -5,6 +5,16 @@ const courses = [
     id: "seguridad-paciente",
     title: "Seguridad del paciente y eventos adversos",
     category: "normativo",
+    topic: "Seguridad del paciente",
+    trainingType: "Curso certificable",
+    price: 149000,
+    currency: "COP",
+    audience: "Auxiliares, enfermeria, cuidadores, personal asistencial y equipos de calidad.",
+    methods: ["Microlecciones", "Casos aplicados", "PCE guiado", "Evaluacion integradora"],
+    contents: ["Cultura justa", "Eventos e incidentes", "Barreras de seguridad", "Debriefing"],
+    outcomes: ["Detectar riesgos", "Escalar oportunamente", "Registrar evidencia", "Demostrar competencia"],
+    businessValue: "Reduce brechas de cumplimiento y entrega evidencia auditable para procesos internos.",
+    includes: ["Certificado verificable", "Trazabilidad de avance", "Reporte individual", "PCE obligatorio"],
     duration: "6 horas",
     level: "Basico",
     summary:
@@ -173,6 +183,16 @@ const courses = [
     id: "humanizacion",
     title: "Humanizacion de la atencion en salud",
     category: "bienestar",
+    topic: "Humanizacion",
+    trainingType: "Curso empresarial",
+    price: 129000,
+    currency: "COP",
+    audience: "Equipos asistenciales, administrativos y organizaciones que atienden usuarios en salud.",
+    methods: ["Microaprendizaje", "Casos conversacionales", "Reflexion guiada", "Debriefing"],
+    contents: ["Comunicacion empatica", "Momentos de verdad", "Trato digno", "Cierre de interacciones"],
+    outcomes: ["Mejorar comunicacion", "Reconocer barreras de trato", "Aplicar debriefing", "Humanizar la atencion"],
+    businessValue: "Aporta a cultura de servicio, satisfaccion del usuario y coherencia institucional.",
+    includes: ["Certificado", "Casos aplicados", "Reporte empresarial", "Actividades reflexivas"],
     duration: "4 horas",
     level: "Intermedio",
     summary:
@@ -184,6 +204,16 @@ const courses = [
     id: "autocuidado",
     title: "Autocuidado y salud mental para equipos",
     category: "bienestar",
+    topic: "Salud mental y autocuidado",
+    trainingType: "Ruta corta",
+    price: 99000,
+    currency: "COP",
+    audience: "Trabajadores de salud, cuidadores, lideres de equipo y personal operativo.",
+    methods: ["Lecciones breves", "Autoevaluacion", "Plan personal", "Recursos descargables"],
+    contents: ["Carga emocional", "Senales de alerta", "Redes de apoyo", "Practicas de autocuidado"],
+    outcomes: ["Reconocer riesgo", "Activar apoyo", "Crear plan de autocuidado", "Sostener habitos"],
+    businessValue: "Favorece bienestar laboral y prevencion temprana de agotamiento en equipos.",
+    includes: ["Certificado", "Plan individual", "Reporte simple", "Recursos practicos"],
     duration: "3 horas",
     level: "Basico",
     summary:
@@ -354,6 +384,13 @@ const defaultState = {
   session: null,
   users: [],
   activeAuthTab: "login",
+  publicCourseQuery: "",
+  publicCourseFilters: {
+    topic: "todos",
+    level: "todos",
+    trainingType: "todos"
+  },
+  selectedPublicCourseId: "seguridad-paciente",
   profile: {
     name: "Estudiante Sananga",
     email: "estudiante@sananga.edu",
@@ -403,6 +440,12 @@ function saveState() {
 function normalizeState(nextState) {
   nextState.users = Array.isArray(nextState.users) ? nextState.users : [];
   nextState.activeAuthTab = nextState.activeAuthTab || "login";
+  nextState.publicCourseQuery = nextState.publicCourseQuery || "";
+  nextState.publicCourseFilters = {
+    ...structuredClone(defaultState.publicCourseFilters),
+    ...(nextState.publicCourseFilters || {})
+  };
+  nextState.selectedPublicCourseId = nextState.selectedPublicCourseId || courses[0]?.id;
   nextState.activeRoleId = nextState.activeRoleId || "student";
   if (nextState.session?.userId) {
     const user = nextState.users.find((item) => item.id === nextState.session.userId);
@@ -489,6 +532,33 @@ function hasPermission(permission) {
     );
   }
   return role.permissions.includes(permission);
+}
+
+function formatMoney(value, currency = "COP") {
+  return new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency,
+    maximumFractionDigits: 0
+  }).format(value);
+}
+
+function uniqueCourseValues(key) {
+  return Array.from(new Set(courses.map((course) => course[key]).filter(Boolean))).sort();
+}
+
+function publicCourses() {
+  const query = state.publicCourseQuery.trim().toLowerCase();
+  return courses.filter((course) => {
+    const filters = state.publicCourseFilters;
+    const text = [course.title, course.summary, course.topic, course.trainingType, course.level, course.audience]
+      .join(" ")
+      .toLowerCase();
+    const matchesQuery = !query || text.includes(query);
+    const matchesTopic = filters.topic === "todos" || course.topic === filters.topic;
+    const matchesLevel = filters.level === "todos" || course.level === filters.level;
+    const matchesType = filters.trainingType === "todos" || course.trainingType === filters.trainingType;
+    return matchesQuery && matchesTopic && matchesLevel && matchesType;
+  });
 }
 
 function canVisit(route) {
@@ -726,6 +796,88 @@ function renderAuth() {
   $("#authResult").innerHTML = user
     ? `<strong>Sesion activa:</strong> ${escapeHtml(user.name)} con rol ${escapeHtml(currentRole()?.label || "sin rol")}.`
     : `Los roles privilegiados requieren invitacion o quedan como solicitud pendiente. En produccion, esto debe vivir en backend con MFA y auditoria.`;
+}
+
+function renderPublicCatalog() {
+  const selectConfigs = [
+    { id: "publicTopicFilter", key: "topic", label: "Todos los temas" },
+    { id: "publicLevelFilter", key: "level", label: "Todos los niveles" },
+    { id: "publicTypeFilter", key: "trainingType", label: "Todos los tipos" }
+  ];
+
+  $("#publicCourseSearch").value = state.publicCourseQuery;
+  selectConfigs.forEach((config) => {
+    const select = $(`#${config.id}`);
+    select.innerHTML = `
+      <option value="todos">${config.label}</option>
+      ${uniqueCourseValues(config.key)
+        .map(
+          (value) => `<option value="${escapeHtml(value)}" ${state.publicCourseFilters[config.key] === value ? "selected" : ""}>${escapeHtml(value)}</option>`
+        )
+        .join("")}
+    `;
+  });
+
+  const visibleCourses = publicCourses();
+  if (!visibleCourses.some((course) => course.id === state.selectedPublicCourseId)) {
+    state.selectedPublicCourseId = visibleCourses[0]?.id || courses[0]?.id;
+  }
+
+  $("#publicCourseGrid").innerHTML = visibleCourses.length
+    ? visibleCourses
+        .map(
+          (course) => `
+          <button class="public-course-card ${
+            state.selectedPublicCourseId === course.id ? "is-selected" : ""
+          }" data-public-course="${course.id}" type="button">
+            <span class="tag">${escapeHtml(course.topic)}</span>
+            <strong>${escapeHtml(course.title)}</strong>
+            <p>${escapeHtml(course.summary)}</p>
+            <div class="course-card-footer">
+              <span>${escapeHtml(course.duration)}</span>
+              <span>${formatMoney(course.price, course.currency)}</span>
+            </div>
+          </button>
+        `
+        )
+        .join("")
+    : `<div class="empty-state">No encontramos cursos con esos filtros.</div>`;
+
+  const selected = courses.find((course) => course.id === state.selectedPublicCourseId) || visibleCourses[0] || courses[0];
+  $("#publicCourseDetail").innerHTML = selected
+    ? `
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Ficha tecnica</p>
+          <h3>${escapeHtml(selected.title)}</h3>
+        </div>
+        <span class="status-pill">${escapeHtml(selected.level)}</span>
+      </div>
+      <p class="muted-copy">${escapeHtml(selected.audience)}</p>
+      <div class="course-detail-meta">
+        <div><strong>${escapeHtml(selected.duration)}</strong><span>Duracion</span></div>
+        <div><strong>${formatMoney(selected.price, selected.currency)}</strong><span>Valor individual</span></div>
+        <div><strong>${escapeHtml(selected.trainingType)}</strong><span>Tipo</span></div>
+      </div>
+      <div class="detail-block">
+        <strong>Metodos</strong>
+        <div class="tag-list">${selected.methods.map((item) => `<span class="tag">${escapeHtml(item)}</span>`).join("")}</div>
+      </div>
+      <div class="detail-block">
+        <strong>Contenidos</strong>
+        <ul>${selected.contents.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+      </div>
+      <div class="detail-block">
+        <strong>Resultados esperados</strong>
+        <ul>${selected.outcomes.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+      </div>
+      <div class="feedback-box"><strong>Valor para empresas</strong><p>${escapeHtml(selected.businessValue)}</p></div>
+      <div class="lesson-actions">
+        <button class="primary-action" data-register-course="${selected.id}" type="button">Registrarme</button>
+        <button class="secondary-action" data-payment-course="${selected.id}" type="button">Pagar curso</button>
+      </div>
+    `
+    : `<div class="empty-state">Selecciona un curso para ver su ficha tecnica.</div>`;
 }
 
 function renderMetrics() {
@@ -1294,6 +1446,7 @@ function formatDate(value) {
 function renderAll() {
   renderNav();
   renderAuth();
+  renderPublicCatalog();
   renderRoleSwitcher();
   renderSidebar();
   renderMetrics();
@@ -1586,6 +1739,42 @@ function bindEvents() {
       return;
     }
 
+    const publicCourseButton = event.target.closest("[data-public-course]");
+    if (publicCourseButton) {
+      state.selectedPublicCourseId = publicCourseButton.dataset.publicCourse;
+      saveState();
+      renderPublicCatalog();
+      return;
+    }
+
+    const registerCourseButton = event.target.closest("[data-register-course]");
+    if (registerCourseButton) {
+      state.selectedPublicCourseId = registerCourseButton.dataset.registerCourse;
+      state.activeAuthTab = "register";
+      saveState();
+      renderAuth();
+      $("#registerIntent").value = "student";
+      $("#registerEmail").focus();
+      showToast("Crea tu cuenta para matricularte en el curso seleccionado.");
+      return;
+    }
+
+    const paymentButton = event.target.closest("[data-payment-course]");
+    if (paymentButton) {
+      state.selectedPublicCourseId = paymentButton.dataset.paymentCourse;
+      state.activeAuthTab = "register";
+      saveState();
+      renderAuth();
+      showToast("El pago se activara despues del registro. En produccion se conectara a pasarela.");
+      return;
+    }
+
+    const scrollButton = event.target.closest("[data-scroll-target]");
+    if (scrollButton) {
+      $(`#${scrollButton.dataset.scrollTarget}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+
     const processButton = event.target.closest("[data-process-state]");
     if (processButton) {
       const course = activeCourse();
@@ -1636,6 +1825,24 @@ function bindEvents() {
       activeFilter = button.dataset.filter;
       $$("[data-filter]").forEach((item) => item.classList.toggle("is-selected", item === button));
       renderCatalog();
+    });
+  });
+
+  $("#publicCourseSearch").addEventListener("input", (event) => {
+    state.publicCourseQuery = event.target.value;
+    saveState();
+    renderPublicCatalog();
+  });
+
+  [
+    ["publicTopicFilter", "topic"],
+    ["publicLevelFilter", "level"],
+    ["publicTypeFilter", "trainingType"]
+  ].forEach(([id, key]) => {
+    $(`#${id}`).addEventListener("change", (event) => {
+      state.publicCourseFilters[key] = event.target.value;
+      saveState();
+      renderPublicCatalog();
     });
   });
 
