@@ -47,6 +47,9 @@ La documentacion se enfoca en la experiencia web del LMS: navegacion, vistas, co
 10. `10_sintesis_fuentes_proyecto_sananga.md`
     Resume los chats y fuentes revisadas del proyecto ChatGPT SANANGA y las decisiones trasladadas al prototipo.
 
+11. `11_linea_tiempo_vision_usuario_sananga.md`
+    Mapea la evolucion de la vision del usuario sobre Sananga a partir de sus propias instrucciones en los chats del proyecto.
+
 ---
 
 ## Estado actual
@@ -66,6 +69,7 @@ El MVP web actual cubre:
 - Registro de eventos de aprendizaje.
 - Pagina publica de acceso con identidad institucional, portafolio, buscador, filtros y fichas comerciales de cursos.
 - Sintesis documental del proyecto Sananga para orientar marketing, producto y siguientes componentes.
+- Linea de tiempo de vision del fundador para orientar cambios estrategicos del LMS.
 
 ---
 

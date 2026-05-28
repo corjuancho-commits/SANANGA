@@ -1,30 +1,26 @@
 # Identidad institucional y acceso comercial
 
-**Version:** 0.2
+**Version:** 0.3
 **Fecha:** 2026-05-28
-**Estado:** Actualizado con revision del proyecto ChatGPT SANANGA
+**Estado:** Actualizado con linea de tiempo de instrucciones del usuario
 **Dominio:** Identidad, mercadeo digital, venta de cursos y acceso al LMS
 
 ---
 
 ## Fuentes revisadas
 
-Esta version incorpora informacion visible en el proyecto ChatGPT de Sananga, especialmente:
+Esta version incorpora informacion visible en el proyecto ChatGPT de Sananga y separa dos tipos de fuente:
 
-- Instrucciones generales del proyecto SANANGA.
-- Chat "Plan de negocios Sananga".
-- Chat "Informe Sananga S.A.S.".
-- Chat "Publicidad educativa en salud".
-- Chat "Slogan para Sananga".
-- Inventario de fuentes del proyecto: estatutos, acuerdos, plan de negocios, hoja de vida y logos.
+- Documentos e insumos: estatutos, acuerdos, plan de negocios, hoja de vida y logos.
+- Instrucciones del usuario: solicitudes, correcciones, dudas, cambios de foco y nuevos horizontes de producto expresados en los chats del proyecto.
 
-Nota: los documentos fuente se identificaron en la seccion Fuentes del proyecto. El contenido legible se contrasto desde los chats que citan y desarrollan esos archivos.
+El documento `11_linea_tiempo_vision_usuario_sananga.md` prioriza la segunda fuente: la evolucion de la vision del fundador a partir de sus propias instrucciones.
 
 ---
 
 ## Tesis de marca
 
-Sananga es una empresa colombiana de educacion en salud para trabajadores y organizaciones. Su promesa no se limita a cumplir requisitos de SST: integra salud preventiva, bienestar mental, autocuidado, salud publica y uso adecuado de los servicios de salud.
+Sananga es una plataforma y ecosistema de educacion en salud orientado a personas, trabajadores, empresas y aliados formativos. Su promesa no se limita a cumplir requisitos de SST: integra salud preventiva, bienestar mental, autocuidado, salud publica, rutas normativas, competencias certificables y uso adecuado de los servicios de salud.
 
 Frase rectora:
 
@@ -48,22 +44,24 @@ El LMS debe traducir esta mision en rutas formativas concretas: diagnostico, apr
 
 ---
 
-## Vision comercial
+## Vision evolucionada
 
-Sananga se proyecta como referente nacional e internacional en educacion en salud para trabajadores, con programas reconocidos por excelencia, impacto, escalabilidad y transformacion de habitos saludables.
+Sananga se proyecta como una plataforma de competencias en salud. En su fase inicial puede vender cursos, experiencias y servicios empresariales; en su evolucion debe poder soportar certificaciones individuales, rutas empresariales, programas sectoriales, productos digitales, IA educativa y posibles programas de formacion tecnica mediante alianzas o una razon social habilitada.
 
 En la plataforma esto implica:
 
-- Portafolio formativo claro para personas y empresas.
+- Portafolio formativo claro para personas, empresas y aliados.
 - Evidencias de avance y logro.
+- Competencias evaluables antes de emitir certificados.
 - Analitica para bienestar, SG-SST y toma de decisiones.
-- Capacidad de escalar hacia IA educativa, personalizacion y certificaciones aliadas.
+- Capacidad de escalar hacia IA educativa, personalizacion, certificaciones aliadas y formacion tecnica futura.
+- Arquitectura flexible para operar productos presenciales, virtuales, hibridos, empresariales e individuales.
 
 ---
 
 ## Diferenciador
 
-Sananga no debe presentarse como proveedor de charlas sueltas. Debe posicionarse como un sistema de educacion en salud para empresas.
+Sananga no debe presentarse como proveedor de charlas sueltas ni como tienda de certificados baratos. Debe posicionarse como sistema de aprendizaje y certificacion de competencias en salud.
 
 Sus diferenciales principales son:
 
@@ -71,6 +69,7 @@ Sus diferenciales principales son:
 - Metodologia vivencial, breve y conectada con la realidad del trabajador.
 - Programas adaptables por sector, turno, cultura interna y riesgos.
 - Evidencias para bienestar y SG-SST.
+- Certificacion basada en desempeno, no en asistencia ni compra del carton.
 - Neuroeducacion, gamificacion, analitica e IA gobernada como evolucion del modelo.
 
 ---
@@ -84,6 +83,8 @@ El catalogo publico y el futuro constructor de cursos deben organizarse alrededo
 3. Primeros auxilios y respuesta inicial.
 4. Salud publica y uso adecuado del sistema de salud.
 5. Programas sectoriales personalizados.
+6. Cursos normativos en salud con competencia demostrada.
+7. Rutas de formacion tecnica cuando exista habilitacion propia o alianza institucional.
 
 Estas lineas deben poder convertirse en cursos individuales, rutas empresariales, programas por cohorte o experiencias piloto.
 
@@ -93,7 +94,7 @@ Estas lineas deben poder convertirse en cursos individuales, rutas empresariales
 
 ## Personas
 
-Trabajadores, profesionales de salud, cuidadores, lideres y usuarios individuales que buscan aprender de forma practica, certificar competencias y fortalecer su capacidad de autocuidado.
+Trabajadores, profesionales de salud, cuidadores, lideres y usuarios individuales que buscan aprender de forma practica, certificar competencias y fortalecer su perfil. Este publico no debe quedar subordinado al cliente empresarial: tambien puede comprar cursos y certificaciones directamente.
 
 ## Empresas
 
@@ -102,6 +103,10 @@ Pymes como primer mercado de validacion, con expansion posterior hacia grandes e
 ## Lideres de bienestar
 
 Gerentes de Talento Humano, SST, bienestar y cultura que necesitan herramientas reales, plantillas, indicadores y rutas educativas para transformar el bienestar corporativo en sistema.
+
+## Aliados formativos
+
+Instituciones, expertos, docentes o entidades habilitadas que puedan aportar contenidos, certificaciones, rutas tecnicas o programas con reconocimiento formal.
 
 ---
 
@@ -116,6 +121,7 @@ Objetivos:
 3. Permitir busqueda por tema, nivel y tipo de formacion.
 4. Mostrar ficha tecnica clara de cada curso.
 5. Convertir interes en registro, matricula, pago o contacto empresarial.
+6. Mostrar que Sananga puede crecer desde cursos certificables hacia rutas tecnicas y alianzas formativas.
 
 La pagina debe vender educando: cada bloque debe aportar claridad, no solo promocion.
 
@@ -130,6 +136,7 @@ La estrategia identificada en los chats prioriza una "experiencia de formacion s
 - Registro individual para matricula y pago.
 - Informacion empresarial para decision de compra.
 - Reportes y evidencia como argumento comercial.
+- Rutas futuras para alianzas, licenciamiento, cohortes tecnicas o certificaciones con tercero habilitado.
 
 En esta fase estatica el pago queda simulado. En produccion debe conectarse con una pasarela y con control de licencias empresariales.
 

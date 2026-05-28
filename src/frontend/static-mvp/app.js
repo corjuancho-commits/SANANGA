@@ -181,6 +181,30 @@ const courses = [
     ]
   },
   {
+    id: "violencia-quimicos",
+    title: "Atencion a victimas de violencia con agentes quimicos",
+    category: "normativo",
+    topic: "Violencia con agentes quimicos",
+    trainingType: "Curso normativo certificable",
+    price: 189000,
+    currency: "COP",
+    audience: "Personal de salud, enfermeria, urgencias, traslado asistencial y equipos que requieren respuesta inicial.",
+    methods: ["Ruta normativa", "Caso operativo", "Simulacion guiada", "Evaluacion integradora"],
+    contents: ["Marco normativo", "Primer contacto", "Descontaminacion inicial", "Remision y registro"],
+    outcomes: ["Reconocer riesgo", "Actuar sin retrasos", "Evitar dano adicional", "Registrar y escalar"],
+    businessValue:
+      "Responde a una necesidad normativa frecuente con formacion real, no solo compra de certificado.",
+    corporateHook:
+      "Curso candidato para validar la promesa Sananga: competir contra el carton barato con competencia demostrada.",
+    includes: ["Certificado verificable", "Caso aplicado", "Rubrica", "Reporte de trazabilidad"],
+    duration: "6 horas",
+    level: "Intermedio",
+    summary:
+      "Ruta certificable para convertir un requisito normativo en respuesta operativa demostrable ante violencia con agentes quimicos.",
+    tags: ["Normativo", "Competencia real", "Curso piloto"],
+    modules: []
+  },
+  {
     id: "humanizacion",
     title: "Humanizacion de la atencion en salud",
     category: "bienestar",
