@@ -32,6 +32,7 @@ Esta persistencia permite simular:
 - Resultado de evaluacion.
 - Certificado emitido.
 - Avance PCE.
+- Evidencias de laboratorio.
 - Eventos de auditoria.
 
 ---
@@ -198,6 +199,30 @@ pce_attempt_decisions
 
 ---
 
+## Entidad LabStation
+
+Representa una estacion de laboratorio asociada a un programa y una competencia.
+
+Campos:
+
+- `id`
+- `title`
+- `objective`
+- `evidence`
+- `rubric`
+
+Futuras tablas sugeridas:
+
+```text
+lab_scenarios
+lab_stations
+lab_rubrics
+lab_attempts
+lab_station_evidence
+```
+
+---
+
 ## Entidad Event
 
 Registra trazabilidad minima.
@@ -256,6 +281,7 @@ learning_events
 | `Module` | `competencies`, `modules` | La competencia contiene modulos y reglas de avance. |
 | `Lesson` | `lessons`, `lesson_progress` | La leccion debe registrar evidencia y avance por matricula. |
 | `Question` | `assessments`, `assessment_questions`, `assessment_attempts` | Evaluaciones versionadas por competencia. |
+| `LabStation` | `lab_scenarios`, `lab_stations`, `lab_attempts`, `lab_station_evidence` | Laboratorio practico dentro de la competencia. |
 | `PceStep` | `pce_scenarios`, `pce_states`, `pce_choices`, `pce_attempts` | El PCE vive dentro de la competencia. |
 | `Certificate` | `certificates`, `certificate_verifications` | Certificado verificable con codigo publico y estado de revocacion. |
 | `Event` | `learning_events` | Tabla append-only para auditoria academica. |

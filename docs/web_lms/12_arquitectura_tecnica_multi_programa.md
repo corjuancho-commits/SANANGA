@@ -208,13 +208,18 @@ El progreso se calcula por competencia, no solo por porcentaje de lecciones.
 - `assessments`
 - `assessment_questions`
 - `assessment_attempts`
+- `lab_scenarios`
+- `lab_stations`
+- `lab_rubrics`
+- `lab_attempts`
+- `lab_station_evidence`
 - `pce_scenarios`
 - `pce_states`
 - `pce_choices`
 - `pce_attempts`
 - `pce_attempt_decisions`
 
-El PCE debe vivir dentro del proceso formativo de una competencia.
+El laboratorio y el PCE deben vivir dentro del proceso formativo de una competencia.
 
 ### Presencialidad, practica y aliados
 
@@ -250,6 +255,9 @@ Organization
         -> Module
           -> Lesson
         -> Assessment
+        -> Lab Scenario
+          -> Lab Station
+            -> Lab Rubric
         -> PCE Scenario
           -> PCE State
             -> PCE Choice
@@ -269,17 +277,19 @@ Para crear un nuevo programa, el panel administrativo debe permitir:
 3. Crear competencias.
 4. Crear modulos y lecciones.
 5. Asociar recursos.
-6. Crear evaluaciones.
-7. Crear escenarios PCE cuando aplique.
-8. Definir reglas de certificacion.
-9. Asociar sedes, sesiones o convenios si aplica.
-10. Validar consistencia.
-11. Publicar version.
+6. Crear laboratorios y rubricas cuando aplique.
+7. Crear evaluaciones.
+8. Crear escenarios PCE cuando aplique.
+9. Definir reglas de certificacion.
+10. Asociar sedes, sesiones o convenios si aplica.
+11. Validar consistencia.
+12. Publicar version.
 
 La publicacion debe fallar si:
 
 - No hay competencias.
 - Una competencia no tiene actividades.
+- Un laboratorio obligatorio no tiene estaciones o rubricas.
 - Una evaluacion no tiene preguntas.
 - Un PCE no tiene estado inicial o estado terminal.
 - Un programa tecnico no tiene datos legales o aliado habilitado cuando aplique.
@@ -311,6 +321,8 @@ La publicacion debe fallar si:
 - `POST /api/v1/lessons/{id}/complete-evidence`
 - `POST /api/v1/assessments/{id}/attempts`
 - `POST /api/v1/assessment-attempts/{id}/submit`
+- `GET /api/v1/me/enrollments/{id}/lab`
+- `POST /api/v1/lab-stations/{id}/evidence`
 - `POST /api/v1/pce-scenarios/{id}/attempts`
 - `POST /api/v1/pce-attempts/{id}/decisions`
 - `POST /api/v1/me/enrollments/{id}/certificate`
@@ -331,6 +343,8 @@ La publicacion debe fallar si:
 - `POST /api/v1/admin/programs/{id}/competencies`
 - `POST /api/v1/admin/competencies/{id}/modules`
 - `POST /api/v1/admin/modules/{id}/lessons`
+- `POST /api/v1/admin/competencies/{id}/lab-scenarios`
+- `POST /api/v1/admin/lab-scenarios/{id}/stations`
 - `POST /api/v1/admin/competencies/{id}/assessments`
 - `POST /api/v1/admin/competencies/{id}/pce-scenarios`
 - `POST /api/v1/admin/venues`
@@ -377,7 +391,7 @@ El prototipo actual tiene:
 - `roleCatalog`
 - `events`
 
-Estas entidades deben mapearse a `programs`, `competencies`, `modules`, `lessons`, `assessments`, `pce_*`, `roles` y `learning_events`.
+Estas entidades deben mapearse a `programs`, `competencies`, `modules`, `lessons`, `assessments`, `lab_*`, `pce_*`, `roles` y `learning_events`.
 
 ### Paso 2: crear seeders
 
@@ -399,7 +413,7 @@ El certificado local debe migrar a:
 
 ### Paso 5: construir panel administrativo
 
-Sin panel administrativo, el principio de programa como configuracion no se cumple. El panel debe permitir crear programas, competencias, lecciones, evaluaciones y PCE.
+Sin panel administrativo, el principio de programa como configuracion no se cumple. El panel debe permitir crear programas, competencias, lecciones, laboratorios, evaluaciones y PCE.
 
 ---
 
@@ -411,6 +425,7 @@ Sin panel administrativo, el principio de programa como configuracion no se cump
 - Catalogo desde PostgreSQL.
 - Matricula.
 - Progreso por competencia.
+- Laboratorios de competencia.
 - Evaluaciones.
 - PCE configurable.
 - Certificados verificables.
@@ -420,6 +435,7 @@ Sin panel administrativo, el principio de programa como configuracion no se cump
 - Constructor de programas.
 - Constructor de competencias.
 - Editor de lecciones.
+- Editor de laboratorios.
 - Editor de evaluaciones.
 - Editor PCE.
 - Versionado y publicacion.

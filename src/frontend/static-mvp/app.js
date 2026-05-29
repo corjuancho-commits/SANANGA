@@ -10,12 +10,12 @@ const courses = [
     price: 149000,
     currency: "COP",
     audience: "Auxiliares, enfermeria, cuidadores, personal asistencial y equipos de calidad.",
-    methods: ["Microlecciones", "Casos aplicados", "PCE guiado", "Evaluacion integradora"],
+    methods: ["Microlecciones", "Casos aplicados", "Laboratorio de simulacion", "PCE guiado", "Evaluacion integradora"],
     contents: ["Cultura justa", "Eventos e incidentes", "Barreras de seguridad", "Debriefing"],
     outcomes: ["Detectar riesgos", "Escalar oportunamente", "Registrar evidencia", "Demostrar competencia"],
     businessValue: "Reduce brechas de cumplimiento y entrega evidencia auditable para procesos internos.",
     corporateHook: "Ideal para equipos asistenciales que necesitan pasar de capacitaciones aisladas a procesos demostrables.",
-    includes: ["Certificado verificable", "Trazabilidad de avance", "Reporte individual", "PCE obligatorio"],
+    includes: ["Certificado verificable", "Trazabilidad de avance", "Laboratorio guiado", "Reporte individual", "PCE obligatorio"],
     duration: "6 horas",
     level: "Basico",
     summary:
@@ -53,6 +53,15 @@ const courses = [
           objective: "Aplicar barreras, alertas, escalamiento y debriefing ante un riesgo.",
           lessonIds: ["l3", "l4"],
           adaptiveRule: "Si el PCE evidencia errores criticos, vuelve a practica procedimental."
+        },
+        {
+          id: "state-laboratorio",
+          type: "lab",
+          title: "Laboratorio de simulacion",
+          skill: "Practica observable",
+          objective: "Ejecutar estaciones de habilidad, registrar evidencia y recibir rubrica antes del PCE.",
+          required: true,
+          adaptiveRule: "Si una estacion queda incompleta, el sistema mantiene bloqueado el PCE y recomienda practica focalizada."
         },
         {
           id: "state-pce",
@@ -130,6 +139,33 @@ const courses = [
       required: true,
       title: "Paciente con riesgo de evento adverso",
       belongsToState: "state-pce"
+    },
+    lab: {
+      title: "Laboratorio de seguridad del paciente",
+      belongsToState: "state-laboratorio",
+      stations: [
+        {
+          id: "lab-seg-prebrief",
+          title: "Prebriefing del caso",
+          objective: "Identificar rol, riesgo principal y criterio de seguridad antes de actuar.",
+          evidence: "Checklist de riesgo, rol asignado y barrera inicial seleccionada.",
+          rubric: "Reconoce el riesgo y verbaliza una accion segura antes de intervenir."
+        },
+        {
+          id: "lab-seg-barrera",
+          title: "Activacion de barrera",
+          objective: "Detener la accion insegura, verificar datos criticos y escalar al responsable.",
+          evidence: "Registro de verificacion, escalamiento y responsable.",
+          rubric: "Aplica barreras sin retrasar la proteccion del paciente."
+        },
+        {
+          id: "lab-seg-debrief",
+          title: "Debriefing y mejora",
+          objective: "Cerrar el caso con aprendizaje, accion de mejora y trazabilidad.",
+          evidence: "Nota breve con factor contribuyente, aprendizaje y accion.",
+          rubric: "Convierte la simulacion en mejora verificable del proceso."
+        }
+      ]
     },
     questions: [
       {
@@ -369,6 +405,7 @@ courses.forEach((course) => {
     "competencia",
     "modulos",
     "lecciones",
+    "laboratorio",
     course.pce?.required ? "pce" : "evaluacion",
     "certificado"
   ];
@@ -411,6 +448,15 @@ courses.forEach((course) => {
         objective: "Convertir el aprendizaje en una accion observable, documentada y transferible al trabajo.",
         lessonIds: [practiceLessonId],
         adaptiveRule: "Si la evidencia aplicada no es clara, el sistema solicita una nueva version con retroalimentacion."
+      },
+      {
+        id: "state-laboratorio",
+        type: "lab",
+        title: "Laboratorio de competencia",
+        skill: "Practica observable",
+        objective: "Practicar una habilidad o decision clave en estaciones guiadas antes de la evaluacion.",
+        required: true,
+        adaptiveRule: "Si falta evidencia del laboratorio, la evaluacion integradora permanece bloqueada."
       },
       {
         id: "state-evaluacion",
@@ -460,6 +506,34 @@ courses.forEach((course) => {
           ]
         }
       ];
+
+  course.lab = course.lab || {
+    title: `Laboratorio de ${course.topic.toLowerCase()}`,
+    belongsToState: "state-laboratorio",
+    stations: [
+      {
+        id: `${course.id}-lab-contexto`,
+        title: "Contexto y objetivo",
+        objective: `Reconocer la situacion de ${course.topic.toLowerCase()} y definir una meta practica.`,
+        evidence: "Registro breve del problema, objetivo y criterio de seguridad.",
+        rubric: "Comprende el contexto y formula una accion observable."
+      },
+      {
+        id: `${course.id}-lab-practica`,
+        title: "Practica guiada",
+        objective: `Aplicar una decision o habilidad relacionada con ${firstOutcome.toLowerCase()}.`,
+        evidence: "Evidencia de ejecucion o respuesta al caso.",
+        rubric: "Aplica la competencia con claridad, oportunidad y justificacion."
+      },
+      {
+        id: `${course.id}-lab-cierre`,
+        title: "Cierre reflexivo",
+        objective: "Convertir la practica en aprendizaje transferible al trabajo.",
+        evidence: "Compromiso de mejora o recomendacion para el entorno laboral.",
+        rubric: "Identifica aprendizaje y propone una mejora concreta."
+      }
+    ]
+  };
 
   course.questions = [
     {
@@ -636,6 +710,7 @@ const navItems = [
   { route: "inicio", label: "Inicio", initial: "IN", permission: "authenticated" },
   { route: "catalogo", label: "Programas", initial: "PR", permission: "learn" },
   { route: "curso", label: "Ruta", initial: "RU", permission: "learn" },
+  { route: "laboratorio", label: "Laboratorio", initial: "LA", permission: "learn" },
   { route: "certificados", label: "Certificados", initial: "CE", permission: "certificate" },
   { route: "admin", label: "Panel", initial: "PA", permission: "admin_surface" }
 ];
@@ -660,6 +735,7 @@ const defaultState = {
   activeCourseId: "seguridad-paciente",
   enrolled: ["seguridad-paciente"],
   completedLessons: [],
+  labEvidence: {},
   selectedLessonId: "l1",
   selectedCompetencyStateId: "state-diagnostico",
   quizScore: null,
@@ -699,6 +775,7 @@ function saveState() {
 
 function normalizeState(nextState) {
   nextState.users = Array.isArray(nextState.users) ? nextState.users : [];
+  nextState.labEvidence = nextState.labEvidence && typeof nextState.labEvidence === "object" ? nextState.labEvidence : {};
   nextState.activeAuthTab = nextState.activeAuthTab || "login";
   nextState.publicCourseQuery = nextState.publicCourseQuery || "";
   nextState.publicCourseFilters = {
@@ -860,6 +937,26 @@ function courseRequiresPce(course = activeCourse()) {
   return Boolean(course.pce?.required);
 }
 
+function courseLabStations(course = activeCourse()) {
+  return course.lab?.stations || [];
+}
+
+function completedLabStationIds(course = activeCourse()) {
+  return state.labEvidence?.[course.id] || [];
+}
+
+function labProgressValue(course = activeCourse()) {
+  const stations = courseLabStations(course);
+  if (!stations.length) return 100;
+  const completed = stations.filter((station) => completedLabStationIds(course).includes(station.id)).length;
+  return Math.round((completed / stations.length) * 100);
+}
+
+function labComplete(course = activeCourse()) {
+  const stations = courseLabStations(course);
+  return !stations.length || stations.every((station) => completedLabStationIds(course).includes(station.id));
+}
+
 function pceComplete(course = activeCourse()) {
   const steps = coursePceSteps(course);
   return !courseRequiresPce(course) || (steps.length > 0 && state.pceIndex >= steps.length);
@@ -871,11 +968,11 @@ function pcePassed(course = activeCourse()) {
 }
 
 function evaluationAvailable(course = activeCourse()) {
-  return progressValue() === 100 && pcePassed(course);
+  return progressValue() === 100 && labComplete(course) && pcePassed(course);
 }
 
 function certificateAvailable(course = activeCourse()) {
-  return state.quizPassed && progressValue() === 100 && pcePassed(course);
+  return state.quizPassed && progressValue() === 100 && labComplete(course) && pcePassed(course);
 }
 
 function lessonsForProcessState(processState, course = activeCourse()) {
@@ -890,6 +987,7 @@ function isCompetencyStateComplete(processState, course = activeCourse()) {
     const lessons = lessonsForProcessState(processState, course);
     return lessons.length > 0 && lessons.every((lesson) => state.completedLessons.includes(lesson.id));
   }
+  if (processState.type === "lab") return labComplete(course);
   if (processState.type === "pce") return pcePassed(course);
   if (processState.type === "evaluation") return state.quizPassed;
   if (processState.type === "certificate") return Boolean(state.certificate);
@@ -937,11 +1035,12 @@ function competencySignals(course = activeCourse()) {
             100
         );
   const pce = courseRequiresPce(course) ? Math.round((state.pceScore / Math.max(coursePceSteps(course).length, 1)) * 100) : 100;
+  const lab = labProgressValue(course);
   const integrative = state.quizScore === null ? 0 : state.quizScore;
 
   return [
     { label: "Conceptual", value: conceptual, detail: "lecciones y evidencias" },
-    { label: "Procedimental", value: Math.round((procedural + pce) / 2), detail: "practica y PCE" },
+    { label: "Procedimental", value: Math.round((procedural + lab + pce) / 3), detail: "practica, laboratorio y PCE" },
     { label: "Integrador", value: integrative, detail: "evaluacion final" }
   ];
 }
@@ -949,6 +1048,9 @@ function competencySignals(course = activeCourse()) {
 function adaptiveRecommendation(course = activeCourse()) {
   if (state.quizScore !== null && !state.quizPassed) {
     return "Refuerzo recomendado: vuelve al estado conceptual y procedimental antes de repetir la evaluacion.";
+  }
+  if (!labComplete(course) && progressValue() === 100) {
+    return "Siguiente estado sugerido: completa el laboratorio para habilitar PCE o evaluacion.";
   }
   if (courseRequiresPce(course) && pceComplete(course) && !pcePassed(course)) {
     return "Refuerzo recomendado: repite practica procedimental antes de avanzar a evaluacion.";
@@ -989,6 +1091,7 @@ function setView(route) {
     inicio: "Inicio",
     catalogo: "Programas",
     curso: "Ruta activa",
+    laboratorio: "Laboratorio",
     evaluacion: "Evaluacion",
     pce: "PCE educativo",
     certificados: "Certificados",
@@ -1442,6 +1545,26 @@ function renderProcessStateDetail(processState, course) {
     `;
   }
 
+  if (processState.type === "lab") {
+    const stations = courseLabStations(course);
+    return `
+      <div class="state-detail">
+        <div>
+          <p class="eyebrow">Laboratorio dentro del programa</p>
+          <h3>${escapeHtml(processState.title)}</h3>
+        </div>
+        ${stateMeta}
+        <p>${escapeHtml(processState.objective)}</p>
+        <div class="feedback-box"><strong>Regla adaptativa</strong><p>${escapeHtml(processState.adaptiveRule)}</p></div>
+        <div class="kpi-stack">
+          <div class="kpi-row"><span>Estaciones completadas</span><strong>${completedLabStationIds(course).length}/${stations.length}</strong></div>
+          <div class="kpi-row"><span>Estado laboratorio</span><strong>${labComplete(course) ? "Aprobado" : "Pendiente"}</strong></div>
+        </div>
+        <button class="primary-action" data-route="laboratorio" type="button" ${available ? "" : "disabled"}>Abrir laboratorio</button>
+      </div>
+    `;
+  }
+
   if (processState.type === "evaluation") {
     return `
       <div class="state-detail">
@@ -1491,6 +1614,98 @@ function renderProcessStateDetail(processState, course) {
   `;
 }
 
+function renderLab() {
+  const course = activeCourse();
+  const stations = courseLabStations(course);
+  const completedIds = completedLabStationIds(course);
+  const labState = competencyStates(course).find((item) => item.type === "lab");
+  const available = labState ? isCompetencyStateAvailable(labState, course) : true;
+  const completed = labComplete(course);
+
+  $("#titulo-laboratorio").textContent = course.lab?.title || "Laboratorio de competencias";
+
+  $("#labStage").innerHTML = stations.length
+    ? `
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Programa activo</p>
+          <h3>${escapeHtml(course.title)}</h3>
+        </div>
+        <span class="status-pill">${labProgressValue(course)}%</span>
+      </div>
+      <p class="muted-copy">
+        Este laboratorio traduce la competencia en practica observable. Cada estacion pide una evidencia
+        concreta antes de abrir el siguiente tramo del proceso formativo.
+      </p>
+      <div class="progress-track"><span style="width:${labProgressValue(course)}%"></span></div>
+      <div class="lab-station-grid">
+        ${stations
+          .map((station, index) => {
+            const isComplete = completedIds.includes(station.id);
+            return `
+              <article class="lab-station-card ${isComplete ? "is-complete" : ""}">
+                <div class="state-title-row">
+                  <div>
+                    <span class="tag">Estacion ${index + 1}</span>
+                    <h4>${escapeHtml(station.title)}</h4>
+                  </div>
+                  <span class="status-pill">${isComplete ? "Evidencia OK" : available ? "Disponible" : "Bloqueada"}</span>
+                </div>
+                <p>${escapeHtml(station.objective)}</p>
+                <div class="evidence-box">
+                  <strong>Evidencia</strong>
+                  <p>${escapeHtml(station.evidence)}</p>
+                </div>
+                <button class="primary-action" data-lab-station="${station.id}" type="button" ${available || isComplete ? "" : "disabled"}>
+                  ${isComplete ? "Evidencia registrada" : "Registrar evidencia"}
+                </button>
+              </article>
+            `;
+          })
+          .join("")}
+      </div>
+    `
+    : `
+      <div class="empty-state">
+        Este programa aun no tiene laboratorio configurado. En el panel productivo se podran crear estaciones, evidencias y rubricas.
+      </div>
+    `;
+
+  $("#labRubric").innerHTML = `
+    <div class="panel-header">
+      <div>
+        <p class="eyebrow">Rubrica del laboratorio</p>
+        <h3>Criterios de desempeno</h3>
+      </div>
+      <span class="status-pill">${completed ? "Aprobado" : "Pendiente"}</span>
+    </div>
+    <div class="kpi-stack">
+      <div class="kpi-row"><span>Estaciones</span><strong>${completedIds.length}/${stations.length}</strong></div>
+      <div class="kpi-row"><span>Habilita</span><strong>${courseRequiresPce(course) ? "PCE" : "Evaluacion"}</strong></div>
+      <div class="kpi-row"><span>Certificacion</span><strong>${completed ? "Suma evidencia" : "Bloqueada"}</strong></div>
+    </div>
+    <div class="lab-rubric-list">
+      ${stations
+        .map(
+          (station) => `
+          <article>
+            <strong>${escapeHtml(station.title)}</strong>
+            <p>${escapeHtml(station.rubric)}</p>
+          </article>
+        `
+        )
+        .join("")}
+    </div>
+    <div class="feedback-box">
+      <strong>Integracion con la ruta</strong>
+      <p>
+        Al completar el laboratorio, la plataforma actualiza el pasaporte de competencia y permite avanzar
+        hacia PCE o evaluacion, segun la configuracion del programa.
+      </p>
+    </div>
+  `;
+}
+
 function renderQuiz() {
   const course = activeCourse();
   const canEvaluate = evaluationAvailable(course);
@@ -1527,7 +1742,7 @@ function renderQuiz() {
     `
     : `
       <div class="empty-state">
-        Esta evaluacion pertenece al proceso formativo del programa y esta bloqueada hasta completar evidencias y PCE obligatorio.
+        Esta evaluacion pertenece al proceso formativo del programa y esta bloqueada hasta completar evidencias, laboratorio y PCE obligatorio.
       </div>
       <button class="secondary-action" data-route="curso" type="button">Volver al algoritmo del programa</button>
     `;
@@ -1578,6 +1793,21 @@ function renderPce() {
     $("#pceFeedback").innerHTML = `
       <div class="feedback-box">Vuelve al programa para continuar el algoritmo formativo.</div>
       <button class="primary-action" data-route="curso" type="button">Volver al programa</button>
+    `;
+    return;
+  }
+  if (!labComplete(course)) {
+    $("#titulo-pce").textContent = "PCE bloqueado por laboratorio";
+    $("#pceStage").innerHTML = `
+      <div class="empty-state">
+        El PCE pertenece al proceso de competencia y se habilita despues de completar el laboratorio.
+      </div>
+      <button class="primary-action" data-route="laboratorio" type="button">Ir al laboratorio</button>
+    `;
+    $("#pceFeedback").innerHTML = `
+      <div class="feedback-box">
+        Completa las estaciones de laboratorio para registrar evidencia procedimental antes de entrar al caso PCE.
+      </div>
     `;
     return;
   }
@@ -1661,13 +1891,13 @@ function renderCertificate() {
   } else if (canIssue) {
     card.innerHTML = `
       <div class="empty-state">
-        Cumples los criterios: evidencias completas, PCE obligatorio aprobado y evaluacion integradora aprobada. Usa el boton "Emitir si aplica" para generar el certificado verificable.
+        Cumples los criterios: evidencias completas, laboratorio aprobado, PCE obligatorio aprobado y evaluacion integradora aprobada. Usa el boton "Emitir si aplica" para generar el certificado verificable.
       </div>
     `;
   } else {
     card.innerHTML = `
       <div class="empty-state">
-        Certificado bloqueado. Completa el algoritmo formativo del programa: evidencias, PCE obligatorio si aplica y evaluacion con minimo 80%.
+        Certificado bloqueado. Completa el algoritmo formativo del programa: evidencias, laboratorio, PCE obligatorio si aplica y evaluacion con minimo 80%.
       </div>
     `;
   }
@@ -1776,6 +2006,7 @@ function renderAll() {
   renderRoleHome();
   renderCatalog();
   renderCourse();
+  renderLab();
   renderQuiz();
   renderPce();
   renderCertificate();
@@ -2125,6 +2356,33 @@ function bindEvents() {
       } else {
         showToast("Esta evidencia ya esta registrada.");
       }
+      return;
+    }
+
+    const labButton = event.target.closest("[data-lab-station]");
+    if (labButton) {
+      const course = activeCourse();
+      const stationId = labButton.dataset.labStation;
+      const currentEvidence = new Set(completedLabStationIds(course));
+      if (currentEvidence.has(stationId)) {
+        showToast("Esta estacion ya tiene evidencia registrada.");
+        return;
+      }
+      currentEvidence.add(stationId);
+      state.labEvidence = {
+        ...(state.labEvidence || {}),
+        [course.id]: Array.from(currentEvidence)
+      };
+      state.selectedCompetencyStateId = labComplete(course)
+        ? courseRequiresPce(course)
+          ? "state-pce"
+          : "state-evaluacion"
+        : "state-laboratorio";
+      const station = courseLabStations(course).find((item) => item.id === stationId);
+      addEvent("laboratorio_evidencia", `Evidencia registrada en ${station?.title || stationId}.`);
+      saveState();
+      showToast(labComplete(course) ? "Laboratorio completo. Ya puedes continuar." : "Evidencia de laboratorio registrada.");
+      renderAll();
       return;
     }
 

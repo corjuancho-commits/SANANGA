@@ -42,9 +42,10 @@ Un curso certificable deberia contener, como minimo:
 1. Diagnostico o encuadre.
 2. Formacion conceptual.
 3. Aplicacion procedimental.
-4. Simulacion PCE, si la competencia lo requiere.
-5. Evaluacion integradora.
-6. Certificacion.
+4. Laboratorio de competencia, si la competencia requiere practica observable.
+5. Simulacion PCE, si la competencia lo requiere.
+6. Evaluacion integradora.
+7. Certificacion.
 
 No todos los cursos requieren PCE, pero si existe, debe vivir dentro del curso y dentro de un estado especifico de adquisicion de competencia.
 
@@ -87,12 +88,29 @@ Esto permite que un nuevo programa tenga sus propios PCE sin modificar el codigo
 
 ---
 
+## Laboratorio dentro del curso
+
+El laboratorio debe vivir dentro del programa y de la competencia, no como actividad aislada. Su funcion es registrar desempeno observable antes de abrir PCE o evaluacion.
+
+Cada laboratorio debe definir:
+
+- Estaciones de practica.
+- Objetivo por estacion.
+- Evidencia esperada.
+- Rubrica.
+- Condicion de aprobacion.
+
+Si el laboratorio es obligatorio y queda incompleto, el PCE, la evaluacion y el certificado deben permanecer bloqueados.
+
+---
+
 ## Criterios de certificacion
 
 El certificado se habilita solamente si el estudiante cumple las condiciones del algoritmo:
 
 - Ruta formativa completada.
 - Evidencias minimas registradas.
+- Laboratorio aprobado cuando sea obligatorio.
 - Evaluacion integradora aprobada.
 - PCE aprobado cuando sea obligatorio.
 - Eventos trazables disponibles.

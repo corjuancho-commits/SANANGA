@@ -53,6 +53,9 @@ La documentacion se enfoca en la experiencia web del LMS: navegacion, vistas, co
 12. `12_arquitectura_tecnica_multi_programa.md`
     Integra la arquitectura tecnica multi-programa: stack recomendado, modelo PostgreSQL objetivo, APIs, RBAC, trazabilidad, certificacion y migracion desde el prototipo.
 
+13. `13_laboratorio_competencias.md`
+    Define el laboratorio como fase practica dentro del programa: estaciones, evidencia, rubrica y bloqueo de PCE/evaluacion hasta completar desempeno observable.
+
 ---
 
 ## Estado actual
@@ -74,6 +77,7 @@ El MVP web actual cubre:
 - Sintesis documental del proyecto Sananga para orientar marketing, producto y siguientes componentes.
 - Linea de tiempo de vision del fundador para orientar cambios estrategicos del LMS.
 - Arquitectura tecnica objetivo para convertir el prototipo en plataforma multi-programa con programas como configuracion, no como codigo.
+- Laboratorio de competencias integrado a la ruta del programa y al bloqueo de PCE/evaluacion.
 
 ---
 
