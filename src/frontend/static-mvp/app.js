@@ -339,6 +339,40 @@ const courses = [
 ];
 
 courses.forEach((course) => {
+  course.programCode = course.programCode || course.id.toUpperCase().replaceAll("-", "_").slice(0, 18);
+  course.programType =
+    course.programType ||
+    (course.trainingType?.toLowerCase().includes("programa")
+      ? "Programa empresarial"
+      : course.trainingType?.toLowerCase().includes("taller")
+        ? "Taller practico"
+        : course.trainingType?.toLowerCase().includes("consultoria")
+          ? "Consultoria formativa"
+          : "Curso informal certificable");
+  course.certificationType = course.certificationType || "Certificado verificable";
+  course.version = course.version || 1;
+  course.configurationStatus = course.configurationStatus || "Publicado";
+  course.operatingModel =
+    course.operatingModel ||
+    (course.programType.includes("Programa")
+      ? "B2B por cohortes"
+      : course.programType.includes("Taller")
+        ? "Mixto con practica"
+        : "Individual y empresarial");
+  course.regulatoryScope =
+    course.regulatoryScope ||
+    (course.category === "normativo"
+      ? "Educacion informal con trazabilidad"
+      : "Educacion para bienestar y salud publica");
+  course.configChecklist = course.configChecklist || [
+    "programa",
+    "competencia",
+    "modulos",
+    "lecciones",
+    course.pce?.required ? "pce" : "evaluacion",
+    "certificado"
+  ];
+
   if (course.competency) return;
   const conceptLessonId = `${course.id}-concepto`;
   const practiceLessonId = `${course.id}-practica`;
@@ -536,7 +570,7 @@ const roleCatalog = {
     initial: "ES",
     assignableBySelf: true,
     permissions: ["learn", "evaluate", "certificate"],
-    summary: "Compra o recibe acceso a cursos, realiza actividades, presenta evaluaciones y descarga certificados propios."
+    summary: "Compra o recibe acceso a programas, realiza actividades, presenta evaluaciones y descarga certificados propios."
   },
   enterprise_admin: {
     label: "Administrador empresarial",
@@ -551,8 +585,8 @@ const roleCatalog = {
     group: "Academico",
     initial: "DI",
     assignableBySelf: false,
-    permissions: ["course_draft", "activities", "rubrics", "pedagogic_analytics"],
-    summary: "Construye cursos, define competencias, actividades, rubricas y propuestas PCE en borrador."
+    permissions: ["program_draft", "competency_map", "activities", "rubrics", "pedagogic_analytics"],
+    summary: "Construye programas, define competencias, actividades, rubricas y propuestas PCE en borrador."
   },
   health_expert: {
     label: "Experto tematico en salud",
@@ -575,8 +609,8 @@ const roleCatalog = {
     group: "Operacion global",
     initial: "AS",
     assignableBySelf: false,
-    permissions: ["global_users", "companies", "courses", "payments", "certificates", "logs", "support"],
-    summary: "Gestiona la operacion global del LMS, usuarios, empresas, cursos, certificados, soporte y analitica."
+    permissions: ["global_users", "companies", "programs", "payments", "certificates", "logs", "support"],
+    summary: "Gestiona la operacion global del LMS, usuarios, empresas, programas, certificados, soporte y analitica."
   },
   technical_superadmin: {
     label: "Superadministrador tecnico",
@@ -600,8 +634,8 @@ const invitationCodes = {
 const navItems = [
   { route: "acceso", label: "Acceso", initial: "AC", public: true },
   { route: "inicio", label: "Inicio", initial: "IN", permission: "authenticated" },
-  { route: "catalogo", label: "Catalogo", initial: "CA", permission: "learn" },
-  { route: "curso", label: "Curso", initial: "CU", permission: "learn" },
+  { route: "catalogo", label: "Programas", initial: "PR", permission: "learn" },
+  { route: "curso", label: "Ruta", initial: "RU", permission: "learn" },
   { route: "certificados", label: "Certificados", initial: "CE", permission: "certificate" },
   { route: "admin", label: "Panel", initial: "PA", permission: "admin_surface" }
 ];
@@ -750,6 +784,7 @@ function hasPermission(permission) {
       [
         "organization_users",
         "course_draft",
+        "program_draft",
         "content_review",
         "open_attempt_review",
         "global_users",
@@ -952,8 +987,8 @@ function setView(route) {
   const titles = {
     acceso: "Acceso",
     inicio: "Inicio",
-    catalogo: "Catalogo",
-    curso: "Curso activo",
+    catalogo: "Programas",
+    curso: "Ruta activa",
     evaluacion: "Evaluacion",
     pce: "PCE educativo",
     certificados: "Certificados",
@@ -1060,15 +1095,19 @@ function renderPublicCatalog() {
             <span class="tag">${escapeHtml(course.topic)}</span>
             <strong>${escapeHtml(course.title)}</strong>
             <p>${escapeHtml(course.summary)}</p>
+            <div class="tag-list">
+              <span class="tag info">${escapeHtml(course.programType)}</span>
+              <span class="tag warn">${escapeHtml(course.certificationType)}</span>
+            </div>
             <div class="course-card-footer">
-              <span>${escapeHtml(course.duration)}</span>
+              <span>${escapeHtml(course.programCode)}</span>
               <span>${formatMoney(course.price, course.currency)}</span>
             </div>
           </button>
         `
         )
         .join("")
-    : `<div class="empty-state">No encontramos cursos con esos filtros.</div>`;
+    : `<div class="empty-state">No encontramos programas con esos filtros.</div>`;
 
   const selected = courses.find((course) => course.id === state.selectedPublicCourseId) || visibleCourses[0] || courses[0];
   $("#publicCourseDetail").innerHTML = selected
@@ -1084,8 +1123,13 @@ function renderPublicCatalog() {
       <div class="course-detail-meta">
         <div><strong>${escapeHtml(selected.duration)}</strong><span>Duracion</span></div>
         <div><strong>${formatMoney(selected.price, selected.currency)}</strong><span>Valor individual</span></div>
-        <div><strong>${escapeHtml(selected.trainingType)}</strong><span>Tipo</span></div>
+        <div><strong>${escapeHtml(selected.programType)}</strong><span>Tipo de programa</span></div>
+        <div><strong>${escapeHtml(selected.certificationType)}</strong><span>Certificacion</span></div>
+        <div><strong>${escapeHtml(selected.operatingModel)}</strong><span>Modelo</span></div>
+        <div><strong>v${escapeHtml(selected.version)}</strong><span>Version</span></div>
       </div>
+      <div class="feedback-box"><strong>Competencia principal</strong><p>${escapeHtml(selected.competency?.name || selected.title)}</p></div>
+      <div class="feedback-box"><strong>Alcance regulatorio</strong><p>${escapeHtml(selected.regulatoryScope)}</p></div>
       <div class="detail-block">
         <strong>Metodos</strong>
         <div class="tag-list">${selected.methods.map((item) => `<span class="tag">${escapeHtml(item)}</span>`).join("")}</div>
@@ -1105,11 +1149,11 @@ function renderPublicCatalog() {
       <div class="feedback-box"><strong>Valor para empresas</strong><p>${escapeHtml(selected.businessValue)}</p></div>
       <div class="feedback-box"><strong>Gancho comercial</strong><p>${escapeHtml(selected.corporateHook || "Puede integrarse a una ruta empresarial de bienestar, salud publica y competencias verificables.")}</p></div>
       <div class="lesson-actions">
-        <button class="primary-action" data-register-course="${selected.id}" type="button">Registrarme</button>
-        <button class="secondary-action" data-payment-course="${selected.id}" type="button">Pagar curso</button>
+        <button class="primary-action" data-register-course="${selected.id}" type="button">Matricularme</button>
+        <button class="secondary-action" data-payment-course="${selected.id}" type="button">Pagar matricula</button>
       </div>
     `
-    : `<div class="empty-state">Selecciona un curso para ver su ficha tecnica.</div>`;
+    : `<div class="empty-state">Selecciona un programa para ver su ficha tecnica.</div>`;
 }
 
 function renderMetrics() {
@@ -1117,7 +1161,7 @@ function renderMetrics() {
   const certificateState = state.certificate ? "Emitido" : certificateAvailable(course) ? "Listo" : "Bloqueado";
   const current = currentCompetencyState(course);
   const metrics = [
-    { value: isAuthenticated() ? state.enrolled.length : 0, label: "curso matriculado" },
+    { value: isAuthenticated() ? state.enrolled.length : 0, label: "programa matriculado" },
     { value: `${competencyProgressValue(course)}%`, label: "dominio de competencia" },
     { value: isAuthenticated() ? current?.title || "Sin estado" : "Inicia sesion", label: "estado sugerido" },
     { value: certificateState, label: "estado certificado" }
@@ -1172,7 +1216,7 @@ function renderRoleHome() {
   const pending = user.pendingRoleRequests || [];
   const roleCards = {
     student: [
-      ["Cursos activos", state.enrolled.length],
+      ["Programas activos", state.enrolled.length],
       ["Competencia actual", `${competencyProgressValue()}%`],
       ["Certificados", state.certificate ? 1 : 0]
     ],
@@ -1182,7 +1226,7 @@ function renderRoleHome() {
       ["Alertas de avance", 3]
     ],
     instructional_designer: [
-      ["Cursos en borrador", 4],
+      ["Programas en borrador", 4],
       ["Rubricas por cerrar", 7],
       ["PCE propuestos", 2]
     ],
@@ -1253,11 +1297,13 @@ function renderCatalog() {
         <div class="tag-list">
           <span class="tag">${escapeHtml(course.level)}</span>
           <span class="tag info">${escapeHtml(course.duration)}</span>
+          <span class="tag warn">${escapeHtml(course.programType)}</span>
         </div>
         <div>
           <h3>${escapeHtml(course.title)}</h3>
           <p>${escapeHtml(course.summary)}</p>
           ${course.competency?.name ? `<p><strong>Competencia:</strong> ${escapeHtml(course.competency.name)}</p>` : ""}
+          <p><strong>Certificacion:</strong> ${escapeHtml(course.certificationType)} | ${escapeHtml(course.operatingModel)}</p>
         </div>
         <div class="tag-list">
           ${course.tags.map((tag) => `<span class="tag warn">${escapeHtml(tag)}</span>`).join("")}
@@ -1280,6 +1326,11 @@ function renderCourse() {
   $("#courseProgressLabel").textContent = `${competencyProgressValue(course)}%`;
   $("#courseProgressBar").style.width = `${competencyProgressValue(course)}%`;
   $("#competencySummary").innerHTML = `
+    <div class="program-context-grid">
+      <div><span>Codigo</span><strong>${escapeHtml(course.programCode)}</strong></div>
+      <div><span>Tipo</span><strong>${escapeHtml(course.programType)}</strong></div>
+      <div><span>Certificacion</span><strong>${escapeHtml(course.certificationType)}</strong></div>
+    </div>
     <p><strong>${escapeHtml(course.competency?.name || course.title)}</strong></p>
     <p>${escapeHtml(course.competency?.algorithm || "Ruta formativa pendiente de configurar.")}</p>
     <div class="signal-grid">
@@ -1317,7 +1368,7 @@ function renderCourse() {
         `;
         })
         .join("")
-    : `<div class="empty-state">Este curso aun no tiene algoritmo formativo configurado.</div>`;
+    : `<div class="empty-state">Este programa aun no tiene algoritmo formativo configurado.</div>`;
 
   $("#lessonDetail").innerHTML = selectedState
     ? renderProcessStateDetail(selectedState, course)
@@ -1376,7 +1427,7 @@ function renderProcessStateDetail(processState, course) {
     return `
       <div class="state-detail">
         <div>
-          <p class="eyebrow">Simulacion dentro del curso</p>
+          <p class="eyebrow">Simulacion dentro del programa</p>
           <h3>${escapeHtml(processState.title)}</h3>
         </div>
         ${stateMeta}
@@ -1386,7 +1437,7 @@ function renderProcessStateDetail(processState, course) {
           <div class="kpi-row"><span>Decisiones correctas</span><strong>${state.pceScore}/${coursePceSteps(course).length}</strong></div>
           <div class="kpi-row"><span>Estado PCE</span><strong>${pcePassed(course) ? "Aprobado" : pceComplete(course) ? "Refuerzo" : "Pendiente"}</strong></div>
         </div>
-        <button class="primary-action" data-route="pce" type="button" ${available ? "" : "disabled"}>Abrir PCE del curso</button>
+        <button class="primary-action" data-route="pce" type="button" ${available ? "" : "disabled"}>Abrir PCE del programa</button>
       </div>
     `;
   }
@@ -1395,13 +1446,13 @@ function renderProcessStateDetail(processState, course) {
     return `
       <div class="state-detail">
         <div>
-          <p class="eyebrow">Evaluacion interna del curso</p>
+          <p class="eyebrow">Evaluacion interna del programa</p>
           <h3>${escapeHtml(processState.title)}</h3>
         </div>
         ${stateMeta}
         <p>${escapeHtml(processState.objective)}</p>
         <div class="feedback-box"><strong>Competencia evaluada</strong><p>${escapeHtml(course.competency.name)}</p></div>
-        <div class="feedback-box"><strong>Condicion de apertura</strong><p>Completar evidencias y aprobar el PCE obligatorio cuando el curso lo exija.</p></div>
+        <div class="feedback-box"><strong>Condicion de apertura</strong><p>Completar evidencias y aprobar el PCE obligatorio cuando el programa lo exija.</p></div>
         <button class="primary-action" data-route="evaluacion" type="button" ${evaluationAvailable(course) ? "" : "disabled"}>
           ${evaluationAvailable(course) ? "Presentar evaluacion integradora" : "Evaluacion bloqueada"}
         </button>
@@ -1476,9 +1527,9 @@ function renderQuiz() {
     `
     : `
       <div class="empty-state">
-        Esta evaluacion pertenece al proceso formativo del curso y esta bloqueada hasta completar evidencias y PCE obligatorio.
+        Esta evaluacion pertenece al proceso formativo del programa y esta bloqueada hasta completar evidencias y PCE obligatorio.
       </div>
-      <button class="secondary-action" data-route="curso" type="button">Volver al algoritmo del curso</button>
+      <button class="secondary-action" data-route="curso" type="button">Volver al algoritmo del programa</button>
     `;
 
   const scoreText = state.quizScore === null ? "Sin intento" : `${state.quizScore}%`;
@@ -1518,15 +1569,15 @@ function renderPce() {
   const course = activeCourse();
   const steps = coursePceSteps(course);
   if (!steps.length) {
-    $("#titulo-pce").textContent = "Curso sin PCE obligatorio";
+    $("#titulo-pce").textContent = "Programa sin PCE obligatorio";
     $("#pceStage").innerHTML = `
       <div class="empty-state">
-        Este curso no tiene PCE configurado. La practica procedimental se resuelve con actividades internas de la ruta.
+        Este programa no tiene PCE configurado. La practica procedimental se resuelve con actividades internas de la ruta.
       </div>
     `;
     $("#pceFeedback").innerHTML = `
-      <div class="feedback-box">Vuelve al curso para continuar el algoritmo formativo.</div>
-      <button class="primary-action" data-route="curso" type="button">Volver al curso</button>
+      <div class="feedback-box">Vuelve al programa para continuar el algoritmo formativo.</div>
+      <button class="primary-action" data-route="curso" type="button">Volver al programa</button>
     `;
     return;
   }
@@ -1554,7 +1605,7 @@ function renderPce() {
     <div class="choice-actions">
       ${
         completed
-          ? `<button class="primary-action" data-route="curso" type="button">Volver al algoritmo del curso</button>`
+          ? `<button class="primary-action" data-route="curso" type="button">Volver al algoritmo del programa</button>`
           : current.choices
               .map(
                 (choice, index) => `
@@ -1583,7 +1634,7 @@ function renderPce() {
     <div class="feedback-box">
       ${
         completed
-          ? "PCE finalizado. Vuelve al algoritmo del curso para continuar hacia evaluacion o refuerzo."
+          ? "PCE finalizado. Vuelve al algoritmo del programa para continuar hacia evaluacion o refuerzo."
           : `Este PCE pertenece al estado ${escapeHtml(course.competency?.states?.find((item) => item.id === course.pce.belongsToState)?.title || "procedimental")}.`
       }
     </div>
@@ -1616,7 +1667,7 @@ function renderCertificate() {
   } else {
     card.innerHTML = `
       <div class="empty-state">
-        Certificado bloqueado. Completa el algoritmo formativo del curso: evidencias, PCE obligatorio si aplica y evaluacion con minimo 80%.
+        Certificado bloqueado. Completa el algoritmo formativo del programa: evidencias, PCE obligatorio si aplica y evaluacion con minimo 80%.
       </div>
     `;
   }
@@ -1633,7 +1684,7 @@ function renderAdmin() {
     </div>
     <div class="kpi-stack">
       <div class="kpi-row"><span>Usuarios demo</span><strong>1</strong></div>
-      <div class="kpi-row"><span>Cursos publicados</span><strong>${courses.length}</strong></div>
+      <div class="kpi-row"><span>Programas publicados</span><strong>${courses.length}</strong></div>
       <div class="kpi-row"><span>Lecciones trazadas</span><strong>${state.completedLessons.length}/${totalLessons}</strong></div>
       <div class="kpi-row"><span>Certificados emitidos</span><strong>${state.certificate ? 1 : 0}</strong></div>
     </div>
@@ -1652,6 +1703,45 @@ function renderAdmin() {
       <div class="report-row"><span>Dominio de competencia</span><strong>${competencyProgressValue()}%</strong></div>
       <div class="report-row"><span>Aprobacion</span><strong>${state.quizPassed ? "100%" : "0%"}</strong></div>
       <div class="report-row"><span>Riesgo academico</span><strong>${state.quizPassed ? "Bajo" : "Medio"}</strong></div>
+    </div>
+  `;
+
+  $("#programConfigPanel").innerHTML = `
+    <div class="panel-header">
+      <div>
+        <p class="eyebrow">Arquitectura multi-programa</p>
+        <h3>Programas como configuracion</h3>
+      </div>
+      <span class="status-pill">Demo sin backend</span>
+    </div>
+    <p class="muted-copy">
+      Esta vista muestra como debera operar el panel productivo: cada oferta se configura con datos
+      de programa, competencia, PCE, evaluacion y certificado, sin reescribir codigo.
+    </p>
+    <div class="program-config-grid">
+      ${courses
+        .map(
+          (course) => `
+          <article class="program-config-card">
+            <div class="state-title-row">
+              <div>
+                <span class="tag">${escapeHtml(course.programCode)}</span>
+                <h4>${escapeHtml(course.title)}</h4>
+              </div>
+              <span class="status-pill">${escapeHtml(course.configurationStatus)}</span>
+            </div>
+            <div class="program-config-meta">
+              <span>${escapeHtml(course.programType)}</span>
+              <span>${escapeHtml(course.certificationType)}</span>
+              <span>${course.pce?.required ? "PCE obligatorio" : "Sin PCE obligatorio"}</span>
+            </div>
+            <div class="program-flow-list">
+              ${course.configChecklist.map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
+            </div>
+          </article>
+        `
+        )
+        .join("")}
     </div>
   `;
 
@@ -1695,7 +1785,7 @@ function renderAll() {
 function enrollCourse(courseId) {
   if (!state.enrolled.includes(courseId)) {
     state.enrolled.push(courseId);
-    addEvent("matricula", `Curso activado: ${courses.find((course) => course.id === courseId).title}.`);
+    addEvent("matricula", `Programa activado: ${courses.find((course) => course.id === courseId).title}.`);
   }
   state.activeCourseId = courseId;
   state.selectedCompetencyStateId = competencyStates(activeCourse())[0]?.id || "state-diagnostico";
@@ -1703,7 +1793,7 @@ function enrollCourse(courseId) {
     state.selectedLessonId = allLessons()[0]?.id || "l1";
   }
   saveState();
-  showToast("Curso activado.");
+  showToast("Programa activado.");
   setView("curso");
 }
 
@@ -1840,7 +1930,7 @@ function submitQuiz(event) {
   event.preventDefault();
   const course = activeCourse();
   if (!evaluationAvailable(course)) {
-    showToast("La evaluacion aun esta bloqueada por el algoritmo formativo del curso.");
+    showToast("La evaluacion aun esta bloqueada por el algoritmo formativo del programa.");
     setView("curso");
     return;
   }
@@ -1925,7 +2015,7 @@ function exportReport() {
   const report = [
     "Reporte simple Sananga LMS",
     `Estudiante: ${state.profile.name}`,
-    `Curso: ${activeCourse().title}`,
+    `Programa: ${activeCourse().title}`,
     `Competencia: ${activeCourse().competency?.name || activeCourse().title}`,
     `Dominio: ${competencyProgressValue()}%`,
     `Evaluacion: ${state.quizScore === null ? "Sin intento" : `${state.quizScore}%`}`,
@@ -1987,7 +2077,7 @@ function bindEvents() {
       renderAuth();
       $("#registerIntent").value = "student";
       $("#registerEmail").focus();
-      showToast("Crea tu cuenta para matricularte en el curso seleccionado.");
+      showToast("Crea tu cuenta para matricularte en el programa seleccionado.");
       return;
     }
 
@@ -1997,7 +2087,7 @@ function bindEvents() {
       state.activeAuthTab = "register";
       saveState();
       renderAuth();
-      showToast("El pago se activara despues del registro. En produccion se conectara a pasarela.");
+      showToast("El pago de matricula se activara despues del registro. En produccion se conectara a pasarela.");
       return;
     }
 

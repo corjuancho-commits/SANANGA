@@ -879,12 +879,14 @@ textarea:focus {
   line-height: 1.45;
 }
 
+.program-context-grid,
 .signal-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
 }
 
+.program-context-grid div,
 .signal-card {
   padding: 10px;
   border: 1px solid #c9ded0;
@@ -892,15 +894,22 @@ textarea:focus {
   background: rgba(255, 255, 255, 0.72);
 }
 
+.program-context-grid strong,
+.program-context-grid span,
 .signal-card strong,
 .signal-card span {
   display: block;
 }
 
+.program-context-grid span,
 .signal-card span {
   color: var(--muted);
   font-size: 0.82rem;
   line-height: 1.3;
+}
+
+.program-context-grid strong {
+  line-height: 1.25;
 }
 
 .module-item,
@@ -1177,6 +1186,49 @@ textarea:focus {
   padding-right: 4px;
 }
 
+.program-config-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.program-config-card {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfdfb;
+}
+
+.program-config-card h4 {
+  margin: 8px 0 0;
+}
+
+.program-config-meta,
+.program-flow-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.program-config-meta span,
+.program-flow-list span {
+  min-height: 28px;
+  padding: 5px 9px;
+  border-radius: 8px;
+  color: var(--muted);
+  background: #f1f6f2;
+  font-size: 0.82rem;
+  font-weight: 750;
+}
+
+.program-flow-list span {
+  color: var(--brand-deep);
+  background: var(--brand-soft);
+}
+
 .audit-row {
   grid-template-columns: 190px minmax(130px, 0.35fr) minmax(0, 1fr);
 }
@@ -1301,6 +1353,8 @@ textarea:focus {
   .metric-grid,
   .course-grid,
   .public-course-grid,
+  .program-config-grid,
+  .program-context-grid,
   .role-dashboard-grid,
   .form-grid,
   .course-detail-meta {
