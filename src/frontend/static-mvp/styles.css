@@ -545,6 +545,60 @@ main {
   line-height: 1.55;
 }
 
+.platform-map-section,
+.campus-map-section {
+  margin-top: 22px;
+}
+
+.platform-map-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.compact-map {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.platform-map-card {
+  min-height: 214px;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.platform-map-card span {
+  width: fit-content;
+  min-width: 34px;
+  padding: 5px 8px;
+  border-radius: 999px;
+  color: var(--brand);
+  background: #e3efe8;
+  font-size: 0.75rem;
+  font-weight: 900;
+}
+
+.platform-map-card h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.platform-map-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.platform-map-card button {
+  width: fit-content;
+  align-self: end;
+  margin-top: auto;
+}
+
 .market-tools {
   grid-template-columns: minmax(220px, 1.4fr) repeat(3, minmax(150px, 0.8fr));
   margin-bottom: 16px;
@@ -1397,6 +1451,8 @@ textarea:focus {
   .security-grid,
   .value-grid,
   .ecosystem-grid,
+  .platform-map-grid,
+  .compact-map,
   .market-tools {
     grid-template-columns: 1fr;
   }
@@ -1445,6 +1501,8 @@ textarea:focus {
   .metric-grid,
   .course-grid,
   .public-course-grid,
+  .platform-map-grid,
+  .compact-map,
   .program-config-grid,
   .program-context-grid,
   .role-dashboard-grid,

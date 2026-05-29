@@ -3,7 +3,6 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta http-equiv="refresh" content="1; url=src/frontend/static-mvp/index.html#acceso" />
     <title>SANANGA | Repositorio local</title>
     <style>
       body {
@@ -49,7 +48,7 @@
     </style>
     <script>
       const hash = window.location.hash || "#acceso";
-      window.setTimeout(() => window.location.replace(`src/frontend/static-mvp/index.html${hash}`), 250);
+      window.location.replace(`src/frontend/static-mvp/index.html${hash}`);
     </script>
   </head>
   <body>
@@ -57,6 +56,8 @@
       <h1>SANANGA</h1>
       <p>Este lanzador abre el prototipo canonico del LMS dentro del repositorio.</p>
       <a href="src/frontend/static-mvp/index.html#acceso">Abrir plataforma</a>
+      <a href="src/frontend/static-mvp/index.html#inicio">Abrir campus</a>
+      <a href="src/frontend/static-mvp/index.html#laboratorio">Abrir laboratorio</a>
     </main>
   </body>
 </html>

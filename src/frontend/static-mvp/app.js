@@ -2331,6 +2331,22 @@ function bindEvents() {
       return;
     }
 
+    const protectedRouteButton = event.target.closest("[data-protected-route]");
+    if (protectedRouteButton) {
+      event.preventDefault();
+      const destination = protectedRouteButton.dataset.protectedRoute;
+      if (isAuthenticated()) {
+        setView(destination);
+      } else {
+        state.postAuthRoute = destination;
+        state.activeAuthTab = "login";
+        saveState();
+        showToast("Inicia sesion para abrir esta superficie del LMS.");
+        setView("acceso");
+      }
+      return;
+    }
+
     const labAccessButton = event.target.closest("[data-lab-access]");
     if (labAccessButton) {
       event.preventDefault();
