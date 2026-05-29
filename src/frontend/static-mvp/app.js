@@ -348,7 +348,7 @@ const courses = [
 ];
 
 courses.forEach((course) => {
-  course.programCode = course.programCode || course.id.toUpperCase().replaceAll("-", "_").slice(0, 18);
+  course.programCode = course.programCode || course.id.toUpperCase().replace(/-/g, "_").slice(0, 18);
   course.programType =
     course.programType ||
     (course.trainingType?.toLowerCase().includes("programa")
@@ -774,6 +774,7 @@ const defaultState = {
 let state = loadState();
 let activeFilter = "todos";
 let toastTimer = null;
+let eventsBound = false;
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -781,10 +782,10 @@ const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 function loadState() {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
-    if (!stored) return normalizeState(structuredClone(defaultState));
-    return normalizeState({ ...structuredClone(defaultState), ...JSON.parse(stored) });
+    if (!stored) return normalizeState(cloneData(defaultState));
+    return normalizeState({ ...cloneData(defaultState), ...JSON.parse(stored) });
   } catch {
-    return normalizeState(structuredClone(defaultState));
+    return normalizeState(cloneData(defaultState));
   }
 }
 
@@ -793,17 +794,42 @@ function saveState() {
 }
 
 function normalizeState(nextState) {
-  nextState.users = Array.isArray(nextState.users) ? nextState.users : [];
+  nextState.users = Array.isArray(nextState.users)
+    ? nextState.users.map((user) => ({
+        ...user,
+        assignedRoles: Array.isArray(user.assignedRoles) && user.assignedRoles.length ? user.assignedRoles : ["student"],
+        pendingRoleRequests: Array.isArray(user.pendingRoleRequests) ? user.pendingRoleRequests : []
+      }))
+    : [];
   nextState.labEvidence = nextState.labEvidence && typeof nextState.labEvidence === "object" ? nextState.labEvidence : {};
   nextState.activeAuthTab = nextState.activeAuthTab || "login";
   nextState.postAuthRoute = nextState.postAuthRoute || null;
   nextState.publicCourseQuery = nextState.publicCourseQuery || "";
   nextState.publicCourseFilters = {
-    ...structuredClone(defaultState.publicCourseFilters),
+    ...cloneData(defaultState.publicCourseFilters),
     ...(nextState.publicCourseFilters || {})
   };
-  nextState.selectedPublicCourseId = nextState.selectedPublicCourseId || courses[0]?.id;
-  nextState.activeRoleId = nextState.activeRoleId || "student";
+  nextState.selectedPublicCourseId = courses.some((course) => course.id === nextState.selectedPublicCourseId)
+    ? nextState.selectedPublicCourseId
+    : courses[0]?.id;
+  nextState.profile = {
+    ...cloneData(defaultState.profile),
+    ...(nextState.profile && typeof nextState.profile === "object" ? nextState.profile : {})
+  };
+  nextState.activeRoleId = roleCatalog[nextState.activeRoleId] ? nextState.activeRoleId : "student";
+  nextState.activeCourseId = courses.some((course) => course.id === nextState.activeCourseId)
+    ? nextState.activeCourseId
+    : courses[0]?.id;
+  nextState.enrolled = Array.isArray(nextState.enrolled) ? nextState.enrolled.filter((id) => courses.some((course) => course.id === id)) : [];
+  if (!nextState.enrolled.length && nextState.activeCourseId) nextState.enrolled = [nextState.activeCourseId];
+  nextState.completedLessons = Array.isArray(nextState.completedLessons) ? nextState.completedLessons : [];
+  nextState.selectedLessonId = nextState.selectedLessonId || allLessons(courses[0])?.[0]?.id || "l1";
+  nextState.selectedCompetencyStateId = nextState.selectedCompetencyStateId || "state-diagnostico";
+  nextState.quizScore = Number.isFinite(Number(nextState.quizScore)) ? Number(nextState.quizScore) : null;
+  nextState.quizPassed = Boolean(nextState.quizPassed);
+  nextState.pceIndex = Number.isFinite(Number(nextState.pceIndex)) ? Number(nextState.pceIndex) : 0;
+  nextState.pceScore = Number.isFinite(Number(nextState.pceScore)) ? Number(nextState.pceScore) : 0;
+  nextState.events = Array.isArray(nextState.events) ? nextState.events : cloneData(defaultState.events);
   if (nextState.session?.userId) {
     const user = nextState.users.find((item) => item.id === nextState.session.userId);
     if (!user) {
@@ -815,13 +841,18 @@ function normalizeState(nextState) {
   return nextState;
 }
 
+function cloneData(value) {
+  if (typeof structuredClone === "function") return structuredClone(value);
+  return JSON.parse(JSON.stringify(value));
+}
+
 function escapeHtml(value) {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 function generateId(prefix) {
@@ -2293,6 +2324,18 @@ function exportReport() {
   renderAll();
 }
 
+function requestAccessFor(destination = "inicio", tab = "login") {
+  state.postAuthRoute = destination;
+  state.activeAuthTab = tab;
+  saveState();
+  setView("acceso");
+  renderAuth();
+  const panel = $(".auth-panel");
+  panel?.scrollIntoView({ behavior: "smooth", block: "center" });
+  const field = tab === "register" ? $("#registerEmail") : $("#loginEmail");
+  field?.focus();
+}
+
 function resetDemo() {
   const identity = {
     session: state.session,
@@ -2301,13 +2344,16 @@ function resetDemo() {
     activeAuthTab: state.activeAuthTab,
     profile: state.profile
   };
-  state = { ...structuredClone(defaultState), ...identity };
+  state = { ...cloneData(defaultState), ...identity };
   saveState();
   showToast("Progreso demo reiniciado; identidad conservada.");
   setView(isAuthenticated() ? "inicio" : "acceso");
 }
 
 function bindEvents() {
+  if (eventsBound) return;
+  eventsBound = true;
+
   document.addEventListener("click", (event) => {
     const routeButton = event.target.closest("[data-route]");
     if (routeButton) {
@@ -2322,11 +2368,8 @@ function bindEvents() {
       if (isAuthenticated()) {
         setView("inicio");
       } else {
-        state.postAuthRoute = "inicio";
-        state.activeAuthTab = "login";
-        saveState();
+        requestAccessFor("inicio", "login");
         showToast("Inicia sesion para entrar al campus.");
-        setView("acceso");
       }
       return;
     }
@@ -2338,11 +2381,8 @@ function bindEvents() {
       if (isAuthenticated()) {
         setView(destination);
       } else {
-        state.postAuthRoute = destination;
-        state.activeAuthTab = "login";
-        saveState();
+        requestAccessFor(destination, "login");
         showToast("Inicia sesion para abrir esta superficie del LMS.");
-        setView("acceso");
       }
       return;
     }
@@ -2353,11 +2393,8 @@ function bindEvents() {
       if (isAuthenticated()) {
         setView("laboratorio");
       } else {
-        state.postAuthRoute = "laboratorio";
-        state.activeAuthTab = "login";
-        saveState();
+        requestAccessFor("laboratorio", "login");
         showToast("Inicia sesion para operar el laboratorio.");
-        setView("acceso");
       }
       return;
     }
@@ -2379,11 +2416,8 @@ function bindEvents() {
     const registerCourseButton = event.target.closest("[data-register-course]");
     if (registerCourseButton) {
       state.selectedPublicCourseId = registerCourseButton.dataset.registerCourse;
-      state.activeAuthTab = "register";
-      saveState();
-      renderAuth();
+      requestAccessFor("curso", "register");
       $("#registerIntent").value = "student";
-      $("#registerEmail").focus();
       showToast("Crea tu cuenta para matricularte en el programa seleccionado.");
       return;
     }
@@ -2391,9 +2425,7 @@ function bindEvents() {
     const paymentButton = event.target.closest("[data-payment-course]");
     if (paymentButton) {
       state.selectedPublicCourseId = paymentButton.dataset.paymentCourse;
-      state.activeAuthTab = "register";
-      saveState();
-      renderAuth();
+      requestAccessFor("curso", "register");
       showToast("El pago de matricula se activara despues del registro. En produccion se conectara a pasarela.");
       return;
     }
@@ -2562,10 +2594,20 @@ function bindEvents() {
 }
 
 function boot() {
-  bindEvents();
-  renderAll();
-  const hashRoute = location.hash.replace("#", "");
-  setView(hashRoute || "inicio");
+  try {
+    bindEvents();
+    renderAll();
+    const hashRoute = location.hash.replace("#", "");
+    setView(hashRoute || "inicio");
+  } catch (error) {
+    console.error("SANANGA boot recovery", error);
+    localStorage.removeItem(STORAGE_KEY);
+    state = normalizeState(cloneData(defaultState));
+    bindEvents();
+    renderAll();
+    setView("acceso");
+    showToast("Se restauro el estado local de la demo para recuperar la navegacion.");
+  }
 }
 
 boot();
