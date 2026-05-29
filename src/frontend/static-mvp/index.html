@@ -33,6 +33,10 @@
             <h1 id="viewTitle">Inicio</h1>
           </div>
           <div class="topbar-actions">
+            <div class="visitor-access-actions" id="visitorAccessActions">
+              <button class="primary-action" data-login-entry type="button">Iniciar sesion</button>
+              <button class="secondary-action" data-register-entry type="button">Crear cuenta</button>
+            </div>
             <div class="role-switcher" id="roleSwitcher"></div>
             <button class="icon-button" id="resetDemo" type="button" aria-label="Reiniciar demo">
               RS
@@ -54,7 +58,8 @@
                   y obtener certificados con evidencia real.
                 </p>
                 <div class="hero-actions">
-                  <button class="primary-action" data-campus-entry="campus" type="button">Entrar al campus</button>
+                  <button class="primary-action" data-login-entry type="button">Iniciar sesion</button>
+                  <button class="secondary-action" data-register-entry type="button">Crear cuenta</button>
                   <button class="secondary-action" data-route="laboratorio" type="button">Entrar al laboratorio</button>
                 </div>
                 <div class="security-grid">
@@ -74,6 +79,10 @@
               </section>
 
               <section class="panel auth-panel">
+                <div class="auth-panel-heading">
+                  <p class="eyebrow">Acceso a la plataforma</p>
+                  <h3>Iniciar sesion</h3>
+                </div>
                 <div class="segmented-control auth-tabs" role="tablist" aria-label="Acceso Sananga">
                   <button class="is-selected" data-auth-tab="login" type="button">Iniciar sesion</button>
                   <button data-auth-tab="register" type="button">Crear cuenta</button>
@@ -88,7 +97,7 @@
                     Contrasena
                     <input id="loginPassword" type="password" autocomplete="current-password" required />
                   </label>
-                  <button class="primary-action" type="submit">Entrar</button>
+                  <button class="primary-action" type="submit">Iniciar sesion</button>
                 </form>
 
                 <form class="auth-form is-hidden" id="registerForm">
@@ -153,7 +162,7 @@
                   <span class="tag">Campus</span>
                   <h3>Campus personal</h3>
                   <p>Ingreso al tablero del estudiante, programas matriculados, progreso, certificados y trazabilidad individual.</p>
-                  <button class="primary-action" data-campus-entry="campus" type="button">Acceder al campus</button>
+                  <button class="primary-action" data-login-entry type="button">Iniciar sesion</button>
                 </article>
                 <article class="ecosystem-card">
                   <span class="tag info">Laboratorio</span>
@@ -182,7 +191,7 @@
                   <span>02</span>
                   <h3>Campus</h3>
                   <p>Inicio por rol, metricas, programas activos, trazabilidad y avance de competencia.</p>
-                  <button class="secondary-action compact" data-protected-route="inicio" type="button">Entrar al campus</button>
+                  <button class="secondary-action compact" data-login-entry type="button">Iniciar sesion</button>
                 </article>
                 <article class="platform-map-card">
                   <span>03</span>

@@ -216,6 +216,23 @@ button:disabled {
   min-width: 190px;
 }
 
+.visitor-access-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.auth-panel-heading {
+  display: grid;
+  gap: 4px;
+}
+
+.auth-panel-heading h3 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
 .role-select-label {
   display: grid;
   gap: 4px;

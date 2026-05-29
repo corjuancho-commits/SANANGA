@@ -1185,6 +1185,8 @@ function renderNav() {
 function renderRoleSwitcher() {
   const user = activeUser();
   const container = $("#roleSwitcher");
+  const visitorAccessActions = $("#visitorAccessActions");
+  if (visitorAccessActions) visitorAccessActions.style.display = user ? "none" : "";
   $("#logoutButton").style.display = user ? "" : "none";
   if (!user) {
     container.innerHTML = "";
@@ -2370,6 +2372,30 @@ function bindEvents() {
       } else {
         requestAccessFor("inicio", "login");
         showToast("Inicia sesion para entrar al campus.");
+      }
+      return;
+    }
+
+    const loginEntryButton = event.target.closest("[data-login-entry]");
+    if (loginEntryButton) {
+      event.preventDefault();
+      if (isAuthenticated()) {
+        setView("inicio");
+      } else {
+        requestAccessFor("inicio", "login");
+        showToast("Formulario de inicio de sesion listo.");
+      }
+      return;
+    }
+
+    const registerEntryButton = event.target.closest("[data-register-entry]");
+    if (registerEntryButton) {
+      event.preventDefault();
+      if (isAuthenticated()) {
+        setView("inicio");
+      } else {
+        requestAccessFor("curso", "register");
+        showToast("Formulario de registro listo.");
       }
       return;
     }
