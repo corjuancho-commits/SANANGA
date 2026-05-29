@@ -2,6 +2,16 @@
 
 Prototipo web inicial del LMS Sananga. Esta version convierte el documento maestro en una experiencia navegable de frontend para validar flujos de estudiante, evaluacion, PCE, certificado verificable y administracion basica.
 
+## Entrada canonica
+
+Esta carpeta es la fuente activa del prototipo. Para evitar abrir versiones antiguas, usa cualquiera de estas entradas:
+
+- `C:\Users\User\Documents\SANANGA\index.html`
+- `C:\Users\User\Documents\SANANGA\repo\index.html`
+- `C:\Users\User\Documents\SANANGA\repo\src\frontend\static-mvp\index.html`
+
+Rutas internas principales: `#acceso`, `#inicio` y `#laboratorio`.
+
 ## Ejecutar localmente
 
 Desde esta carpeta:
@@ -43,4 +53,3 @@ Incluye:
 ## Siguiente paso tecnico
 
 Cuando el prototipo sea estable, migrar a una aplicacion modular con componentes reutilizables, preferiblemente en `src/frontend/app/`, manteniendo esta carpeta como referencia funcional.
-

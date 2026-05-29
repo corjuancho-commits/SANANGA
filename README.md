@@ -1,4 +1,21 @@
 # SANANGA
+
+## Entrada local unificada
+
+Para evitar duplicados, la entrada recomendada en este equipo es:
+
+`C:\Users\User\Documents\SANANGA\index.html`
+
+Tambien puedes abrir el lanzador versionado del repositorio:
+
+`C:\Users\User\Documents\SANANGA\repo\index.html`
+
+Ambos redirigen al aplicativo canonico:
+
+`C:\Users\User\Documents\SANANGA\repo\src\frontend\static-mvp\index.html`
+
+Rutas principales: `#acceso` para el ecosistema publico, `#inicio` para el campus y `#laboratorio` para el laboratorio de competencias.
+
 Sananga es un proyecto de educación en salud orientado a crear programas, certificaciones y una plataforma LMS inteligente con IA, evaluación por competencias, simulaciones PCE y analítica educativa para formar talento humano en salud con evidencia real de aprendizaje y desempeño.
 
 Sananga es una iniciativa colombiana que busca revolucionar la formación en salud y bienestar para trabajadores, empresas y profesionales del sector. El proyecto nació como una respuesta a la necesidad de tener programas de capacitación que no se limiten a entregar un certificado rápido, sino que garanticen la adquisición real de competencias y la mejora del desempeño. Para lograrlo, Sananga combina educación informal, tecnología educativa de última generación, inteligencia artificial y un enfoque centrado en la seguridad del paciente.
