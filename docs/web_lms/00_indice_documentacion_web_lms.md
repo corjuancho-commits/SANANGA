@@ -1,7 +1,7 @@
 # Documentacion web del LMS Sananga
 
-**Version:** 0.1  
-**Fecha:** 2026-05-27  
+**Version:** 0.2
+**Fecha:** 2026-05-29
 **Estado:** Borrador inicial para repositorio  
 **Alcance:** Documentacion de la pagina web y MVP frontend del LMS Sananga  
 
@@ -50,6 +50,9 @@ La documentacion se enfoca en la experiencia web del LMS: navegacion, vistas, co
 11. `11_linea_tiempo_vision_usuario_sananga.md`
     Mapea la evolucion de la vision del usuario sobre Sananga a partir de sus propias instrucciones en los chats del proyecto.
 
+12. `12_arquitectura_tecnica_multi_programa.md`
+    Integra la arquitectura tecnica multi-programa: stack recomendado, modelo PostgreSQL objetivo, APIs, RBAC, trazabilidad, certificacion y migracion desde el prototipo.
+
 ---
 
 ## Estado actual
@@ -70,6 +73,7 @@ El MVP web actual cubre:
 - Pagina publica de acceso con identidad institucional, portafolio, buscador, filtros y fichas comerciales de cursos.
 - Sintesis documental del proyecto Sananga para orientar marketing, producto y siguientes componentes.
 - Linea de tiempo de vision del fundador para orientar cambios estrategicos del LMS.
+- Arquitectura tecnica objetivo para convertir el prototipo en plataforma multi-programa con programas como configuracion, no como codigo.
 
 ---
 

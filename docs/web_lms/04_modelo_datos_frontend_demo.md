@@ -1,7 +1,7 @@
 # Modelo de datos frontend demo
 
-**Version:** 0.1  
-**Fecha:** 2026-05-27  
+**Version:** 0.2
+**Fecha:** 2026-05-29
 **Estado:** Borrador inicial  
 **Dominio:** Datos de demostracion frontend  
 
@@ -73,11 +73,18 @@ Campos:
 Futuras tablas sugeridas:
 
 ```text
-courses
-course_versions
-course_modules
+programs
+program_versions
+competencies
+modules
 lessons
 ```
+
+Nota de arquitectura:
+
+En el prototipo se mantiene el nombre `Course` porque la interfaz actual habla de cursos. En el backend productivo, la entidad equivalente debe ser `Program`. Esto permite que una misma plataforma soporte cursos informales, cursos empresariales, microcredenciales y programas tecnicos laborales sin cambiar codigo.
+
+El nombre comercial puede seguir mostrandose como "curso" cuando sea conveniente para el usuario final, pero el modelo interno debe tratarlo como programa formativo configurable.
 
 ---
 
@@ -93,7 +100,7 @@ Campos:
 Futura tabla sugerida:
 
 ```text
-course_modules
+modules
 ```
 
 ---
@@ -186,7 +193,7 @@ pce_scenarios
 pce_states
 pce_choices
 pce_attempts
-pce_events
+pce_attempt_decisions
 ```
 
 ---
@@ -228,10 +235,30 @@ learning_events
 ## Reglas de migracion a backend
 
 1. Mantener eventos como fuente de auditoria.
-2. Versionar cursos y evaluaciones.
-3. Separar certificado emitido de plantilla de certificado.
-4. Asociar intentos de evaluacion a usuario, curso y version.
-5. Asociar PCE a escenario, estado y rubrica.
-6. Usar PostgreSQL como base principal.
-7. Evaluar `pgvector` cuando se incorpore RAG.
+2. Migrar `Course` a `Program`, no a una tabla aislada de cursos.
+3. Versionar programas, evaluaciones y escenarios PCE.
+4. Separar certificado emitido de plantilla de certificado.
+5. Asociar intentos de evaluacion a usuario, matricula, programa, competencia y version.
+6. Asociar PCE a competencia, escenario, estado, decision y rubrica.
+7. Usar PostgreSQL como base principal, con JSONB para configuraciones flexibles.
+8. Evaluar `pgvector` cuando se incorpore RAG.
+9. Crear una tabla `enrollment_competency_progress` para materializar el pasaporte de competencias.
+10. Tratar cada programa como configuracion editable desde panel administrativo, no como codigo nuevo.
+
+---
+
+## Mapeo hacia arquitectura multi-programa
+
+| Prototipo frontend | Backend productivo sugerido | Comentario |
+| --- | --- | --- |
+| `Profile` | `users`, `roles`, `user_program_roles` | Una persona puede tener varios roles segun programa o contexto. |
+| `Course` | `programs`, `program_versions` | Curso visible al usuario; programa en la arquitectura. |
+| `Module` | `competencies`, `modules` | La competencia contiene modulos y reglas de avance. |
+| `Lesson` | `lessons`, `lesson_progress` | La leccion debe registrar evidencia y avance por matricula. |
+| `Question` | `assessments`, `assessment_questions`, `assessment_attempts` | Evaluaciones versionadas por competencia. |
+| `PceStep` | `pce_scenarios`, `pce_states`, `pce_choices`, `pce_attempts` | El PCE vive dentro de la competencia. |
+| `Certificate` | `certificates`, `certificate_verifications` | Certificado verificable con codigo publico y estado de revocacion. |
+| `Event` | `learning_events` | Tabla append-only para auditoria academica. |
+
+Este mapeo queda desarrollado en `12_arquitectura_tecnica_multi_programa.md`.
 

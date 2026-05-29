@@ -75,6 +75,16 @@ PCE: Paciente con riesgo de evento adverso
 
 El PCE no reemplaza al curso, sino que valida una fase concreta del desarrollo de la competencia.
 
+En la arquitectura productiva, cada PCE debe guardarse como datos configurables:
+
+- `pce_scenarios`: caso o simulacion asociada a una competencia.
+- `pce_states`: estados del caso.
+- `pce_choices`: decisiones posibles y transiciones.
+- `pce_attempts`: intentos del estudiante.
+- `pce_attempt_decisions`: decisiones tomadas en cada intento.
+
+Esto permite que un nuevo programa tenga sus propios PCE sin modificar el codigo de la plataforma.
+
 ---
 
 ## Criterios de certificacion
@@ -104,4 +114,3 @@ La vista principal del curso debe mostrar:
 - Proxima accion sugerida.
 
 La evaluacion, el PCE y el certificado deben ser estados internos del curso, no destinos sueltos sin contexto.
-

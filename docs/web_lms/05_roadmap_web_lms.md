@@ -1,7 +1,7 @@
 # Roadmap de evolucion web LMS Sananga
 
-**Version:** 0.1  
-**Fecha:** 2026-05-27  
+**Version:** 0.2
+**Fecha:** 2026-05-29
 **Estado:** Borrador inicial  
 **Dominio:** Roadmap frontend y plataforma web  
 
@@ -67,6 +67,25 @@ Entregables:
 
 ---
 
+## Fase 2.5: arquitectura multi-programa y contrato tecnico
+
+Objetivo:
+
+Definir el contrato tecnico antes de construir backend productivo, evitando que la plataforma quede amarrada a un solo curso o a datos hardcodeados.
+
+Entregables:
+
+- Documento `12_arquitectura_tecnica_multi_programa.md`.
+- Modelo conceptual `Program -> Competency -> Module -> Lesson`.
+- Regla de programa como configuracion, no como codigo.
+- Esquema objetivo PostgreSQL.
+- Contrato inicial de APIs REST.
+- Modelo RBAC por usuario, programa y rol.
+- Definicion de tabla de eventos append-only.
+- Criterios de certificacion verificable.
+
+---
+
 ## Fase 3: backend modular
 
 Objetivo:
@@ -76,18 +95,24 @@ Sustituir `localStorage` por persistencia real.
 Entregables:
 
 - API de usuarios.
-- API de cursos.
+- API de programas.
+- API de competencias.
 - API de progreso.
 - API de evaluaciones.
+- API de PCE.
+- API de sesiones presenciales cuando aplique.
+- API de rotaciones IPS cuando aplique.
 - API de certificados.
 - API de eventos.
 - Autenticacion.
 - Control de roles.
+- Panel administrativo para crear programas sin tocar codigo.
 
 Tecnologias sugeridas:
 
-- FastAPI, Django, NestJS o Laravel.
-- PostgreSQL.
+- FastAPI con SQLAlchemy 2.0 y Alembic.
+- PostgreSQL con JSONB y preparacion para `pgvector`.
+- Redis para sesiones, colas livianas y rate limiting.
 - Almacenamiento compatible con S3.
 
 ---
@@ -170,11 +195,13 @@ La plataforma web puede pasar de prototipo a MVP tecnico cuando:
 1. El estudiante puede registrarse y autenticarse.
 2. El catalogo se carga desde backend.
 3. La matricula queda persistida.
-4. El progreso se guarda por usuario y curso.
+4. El progreso se guarda por usuario, programa, competencia y matricula.
 5. La evaluacion registra intentos.
 6. El certificado se emite desde backend.
 7. El codigo de certificado se verifica en una URL publica.
 8. Los eventos quedan disponibles para auditoria.
 9. El panel admin muestra datos reales.
 10. La interfaz funciona correctamente en movil.
+11. Un administrador puede crear o editar un programa desde datos, sin cambios de codigo.
+12. El PCE y las evaluaciones viven dentro de la competencia correspondiente.
 
