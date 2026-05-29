@@ -496,15 +496,22 @@ main {
 }
 
 .value-grid,
+.ecosystem-grid,
 .market-tools {
   display: grid;
   gap: 14px;
 }
 
+.ecosystem-grid,
 .value-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.ecosystem-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.ecosystem-card,
 .value-grid article {
   padding: 18px;
   border: 1px solid var(--line);
@@ -512,10 +519,30 @@ main {
   background: var(--surface);
 }
 
+.ecosystem-card {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.ecosystem-card h3 {
+  margin: 0;
+}
+
+.ecosystem-card .primary-action {
+  width: fit-content;
+}
+
 .value-grid p {
   margin-bottom: 0;
   color: var(--muted);
   line-height: 1.5;
+}
+
+.ecosystem-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
 }
 
 .market-tools {
@@ -1137,6 +1164,12 @@ textarea:focus {
   gap: 12px;
 }
 
+.lab-entry-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 .lab-station-card {
   display: grid;
   gap: 12px;
@@ -1337,7 +1370,7 @@ textarea:focus {
   }
 
   .nav-list {
-    grid-template-columns: repeat(6, minmax(88px, 1fr));
+    grid-template-columns: repeat(7, minmax(88px, 1fr));
     overflow-x: auto;
     padding-bottom: 4px;
   }
@@ -1363,6 +1396,7 @@ textarea:focus {
 
   .security-grid,
   .value-grid,
+  .ecosystem-grid,
   .market-tools {
     grid-template-columns: 1fr;
   }
@@ -1424,7 +1458,7 @@ textarea:focus {
   }
 
   .nav-list {
-    grid-template-columns: repeat(6, 116px);
+    grid-template-columns: repeat(7, 116px);
   }
 
   .nav-item {

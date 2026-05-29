@@ -209,6 +209,7 @@ El progreso se calcula por competencia, no solo por porcentaje de lecciones.
 - `assessment_questions`
 - `assessment_attempts`
 - `lab_scenarios`
+- `lab_modules`
 - `lab_stations`
 - `lab_rubrics`
 - `lab_attempts`
@@ -256,8 +257,9 @@ Organization
           -> Lesson
         -> Assessment
         -> Lab Scenario
-          -> Lab Station
-            -> Lab Rubric
+          -> Lab Module
+            -> Lab Station
+              -> Lab Rubric
         -> PCE Scenario
           -> PCE State
             -> PCE Choice

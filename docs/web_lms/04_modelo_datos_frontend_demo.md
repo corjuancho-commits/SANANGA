@@ -199,13 +199,29 @@ pce_attempt_decisions
 
 ---
 
-## Entidad LabStation
+## Entidad LabModule
 
-Representa una estacion de laboratorio asociada a un programa y una competencia.
+Representa un modulo estructural del laboratorio como subecosistema independiente del campus.
 
 Campos:
 
 - `id`
+- `title`
+- `layer`
+- `objective`
+- `components`
+- `output`
+
+---
+
+## Entidad LabStation
+
+Representa una estacion de practica asociada a un laboratorio, programa y competencia. En el prototipo actual se muestran modulos estructurales; las estaciones especificas se configuraran despues desde el panel academico.
+
+Campos futuros:
+
+- `id`
+- `labModuleId`
 - `title`
 - `objective`
 - `evidence`
@@ -215,6 +231,7 @@ Futuras tablas sugeridas:
 
 ```text
 lab_scenarios
+lab_modules
 lab_stations
 lab_rubrics
 lab_attempts
@@ -281,7 +298,8 @@ learning_events
 | `Module` | `competencies`, `modules` | La competencia contiene modulos y reglas de avance. |
 | `Lesson` | `lessons`, `lesson_progress` | La leccion debe registrar evidencia y avance por matricula. |
 | `Question` | `assessments`, `assessment_questions`, `assessment_attempts` | Evaluaciones versionadas por competencia. |
-| `LabStation` | `lab_scenarios`, `lab_stations`, `lab_attempts`, `lab_station_evidence` | Laboratorio practico dentro de la competencia. |
+| `LabModule` | `lab_modules`, `lab_scenarios` | Arquitectura modular del laboratorio como subecosistema. |
+| `LabStation` | `lab_stations`, `lab_attempts`, `lab_station_evidence` | Estaciones especificas del laboratorio dentro de la competencia. |
 | `PceStep` | `pce_scenarios`, `pce_states`, `pce_choices`, `pce_attempts` | El PCE vive dentro de la competencia. |
 | `Certificate` | `certificates`, `certificate_verifications` | Certificado verificable con codigo publico y estado de revocacion. |
 | `Event` | `learning_events` | Tabla append-only para auditoria academica. |

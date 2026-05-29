@@ -140,33 +140,6 @@ const courses = [
       title: "Paciente con riesgo de evento adverso",
       belongsToState: "state-pce"
     },
-    lab: {
-      title: "Laboratorio de seguridad del paciente",
-      belongsToState: "state-laboratorio",
-      stations: [
-        {
-          id: "lab-seg-prebrief",
-          title: "Prebriefing del caso",
-          objective: "Identificar rol, riesgo principal y criterio de seguridad antes de actuar.",
-          evidence: "Checklist de riesgo, rol asignado y barrera inicial seleccionada.",
-          rubric: "Reconoce el riesgo y verbaliza una accion segura antes de intervenir."
-        },
-        {
-          id: "lab-seg-barrera",
-          title: "Activacion de barrera",
-          objective: "Detener la accion insegura, verificar datos criticos y escalar al responsable.",
-          evidence: "Registro de verificacion, escalamiento y responsable.",
-          rubric: "Aplica barreras sin retrasar la proteccion del paciente."
-        },
-        {
-          id: "lab-seg-debrief",
-          title: "Debriefing y mejora",
-          objective: "Cerrar el caso con aprendizaje, accion de mejora y trazabilidad.",
-          evidence: "Nota breve con factor contribuyente, aprendizaje y accion.",
-          rubric: "Convierte la simulacion en mejora verificable del proceso."
-        }
-      ]
-    },
     questions: [
       {
         text: "Que debe certificar Sananga segun el documento maestro?",
@@ -508,31 +481,9 @@ courses.forEach((course) => {
       ];
 
   course.lab = course.lab || {
-    title: `Laboratorio de ${course.topic.toLowerCase()}`,
+    title: "Laboratorio de competencias Sananga",
     belongsToState: "state-laboratorio",
-    stations: [
-      {
-        id: `${course.id}-lab-contexto`,
-        title: "Contexto y objetivo",
-        objective: `Reconocer la situacion de ${course.topic.toLowerCase()} y definir una meta practica.`,
-        evidence: "Registro breve del problema, objetivo y criterio de seguridad.",
-        rubric: "Comprende el contexto y formula una accion observable."
-      },
-      {
-        id: `${course.id}-lab-practica`,
-        title: "Practica guiada",
-        objective: `Aplicar una decision o habilidad relacionada con ${firstOutcome.toLowerCase()}.`,
-        evidence: "Evidencia de ejecucion o respuesta al caso.",
-        rubric: "Aplica la competencia con claridad, oportunidad y justificacion."
-      },
-      {
-        id: `${course.id}-lab-cierre`,
-        title: "Cierre reflexivo",
-        objective: "Convertir la practica en aprendizaje transferible al trabajo.",
-        evidence: "Compromiso de mejora o recomendacion para el entorno laboral.",
-        rubric: "Identifica aprendizaje y propone una mejora concreta."
-      }
-    ]
+    modules: labModules.map((module) => module.id)
   };
 
   course.questions = [
@@ -637,6 +588,73 @@ const pceSteps = [
   }
 ];
 
+const labModules = [
+  {
+    id: "lab-orquestacion",
+    title: "Orquestacion del laboratorio",
+    layer: "Nucleo",
+    objective: "Recibir al estudiante, validar credenciales, contexto de programa y estado de competencia.",
+    components: ["Acceso directo", "Sesion segura", "Contexto de matricula", "Estado de competencia"],
+    output: "Entrada estable al laboratorio sin depender del campus personal."
+  },
+  {
+    id: "lab-programas",
+    title: "Contexto academico",
+    layer: "Programa",
+    objective: "Conectar laboratorio, programa, competencia y reglas de habilitacion.",
+    components: ["Programa", "Competencia", "Version curricular", "Reglas de avance"],
+    output: "Laboratorio ubicado dentro de una competencia sin romper la logica del campus."
+  },
+  {
+    id: "lab-estaciones",
+    title: "Constructor de estaciones",
+    layer: "Practica",
+    objective: "Organizar estaciones de habilidad, simulacion o decision segun la competencia.",
+    components: ["Estaciones", "Objetivos", "Materiales", "Criterios de paso"],
+    output: "Secuencia practica configurable, sin ejemplos hardcodeados."
+  },
+  {
+    id: "lab-simulacion",
+    title: "Motor de simulacion",
+    layer: "Ejecucion",
+    objective: "Ejecutar casos, instrucciones, decisiones, recursos y tiempos de practica.",
+    components: ["Caso", "Recursos", "Temporizador", "Decision guiada"],
+    output: "Experiencia practica antes de PCE o evaluacion integradora."
+  },
+  {
+    id: "lab-evidencias",
+    title: "Banco de evidencias",
+    layer: "Trazabilidad",
+    objective: "Registrar evidencias por estacion y asociarlas al pasaporte de competencia.",
+    components: ["Texto", "Archivo futuro", "Checklist", "Evento academico"],
+    output: "Evidencia verificable del desempeno practico."
+  },
+  {
+    id: "lab-rubricas",
+    title: "Rubricas y desempeno",
+    layer: "Evaluacion",
+    objective: "Calificar desempeno observable con criterios definidos por la competencia.",
+    components: ["Criterios", "Niveles", "Retroalimentacion", "Aprobacion"],
+    output: "Resultado de laboratorio que habilita PCE, evaluacion o refuerzo."
+  },
+  {
+    id: "lab-debriefing",
+    title: "Debriefing y refuerzo",
+    layer: "Aprendizaje",
+    objective: "Cerrar la practica con reflexion, refuerzo y siguiente accion recomendada.",
+    components: ["Reflexion", "Retroalimentacion", "Accion de mejora", "Reintento"],
+    output: "Aprendizaje transferible antes de certificar."
+  },
+  {
+    id: "lab-analitica",
+    title: "Analitica operativa",
+    layer: "Gestion",
+    objective: "Mostrar avance, riesgos, estaciones completadas y trazabilidad para campus y empresas.",
+    components: ["Indicadores", "Alertas", "Reporte", "Auditoria"],
+    output: "Visibilidad del laboratorio sin mezclarlo con el dashboard personal."
+  }
+];
+
 const roleCatalog = {
   student: {
     label: "Estudiante individual",
@@ -706,11 +724,11 @@ const invitationCodes = {
 };
 
 const navItems = [
-  { route: "acceso", label: "Acceso", initial: "AC", public: true },
-  { route: "inicio", label: "Inicio", initial: "IN", permission: "authenticated" },
+  { route: "acceso", label: "Ecosistema", initial: "EC", public: true },
+  { route: "inicio", label: "Campus", initial: "CM", permission: "authenticated" },
   { route: "catalogo", label: "Programas", initial: "PR", permission: "learn" },
   { route: "curso", label: "Ruta", initial: "RU", permission: "learn" },
-  { route: "laboratorio", label: "Laboratorio", initial: "LA", permission: "learn" },
+  { route: "laboratorio", label: "Laboratorio", initial: "LA", public: true },
   { route: "certificados", label: "Certificados", initial: "CE", permission: "certificate" },
   { route: "admin", label: "Panel", initial: "PA", permission: "admin_surface" }
 ];
@@ -719,6 +737,7 @@ const defaultState = {
   session: null,
   users: [],
   activeAuthTab: "login",
+  postAuthRoute: null,
   publicCourseQuery: "",
   publicCourseFilters: {
     topic: "todos",
@@ -777,6 +796,7 @@ function normalizeState(nextState) {
   nextState.users = Array.isArray(nextState.users) ? nextState.users : [];
   nextState.labEvidence = nextState.labEvidence && typeof nextState.labEvidence === "object" ? nextState.labEvidence : {};
   nextState.activeAuthTab = nextState.activeAuthTab || "login";
+  nextState.postAuthRoute = nextState.postAuthRoute || null;
   nextState.publicCourseQuery = nextState.publicCourseQuery || "";
   nextState.publicCourseFilters = {
     ...structuredClone(defaultState.publicCourseFilters),
@@ -907,7 +927,7 @@ function canVisit(route) {
 }
 
 function loginRequiredRoute(route) {
-  return route !== "acceso" && !isAuthenticated();
+  return !["acceso", "laboratorio"].includes(route) && !isAuthenticated();
 }
 
 function activeCourse() {
@@ -938,7 +958,8 @@ function courseRequiresPce(course = activeCourse()) {
 }
 
 function courseLabStations(course = activeCourse()) {
-  return course.lab?.stations || [];
+  const enabledIds = course.lab?.modules || labModules.map((module) => module.id);
+  return labModules.filter((module) => enabledIds.includes(module.id));
 }
 
 function completedLabStationIds(course = activeCourse()) {
@@ -1087,8 +1108,8 @@ function setView(route) {
     button.classList.toggle("is-active", button.dataset.route === route);
   });
   const titles = {
-    acceso: "Acceso",
-    inicio: "Inicio",
+    acceso: "Ecosistema",
+    inicio: "Campus",
     catalogo: "Programas",
     curso: "Ruta activa",
     laboratorio: "Laboratorio",
@@ -1616,48 +1637,53 @@ function renderProcessStateDetail(processState, course) {
 
 function renderLab() {
   const course = activeCourse();
-  const stations = courseLabStations(course);
+  const modules = courseLabStations(course);
   const completedIds = completedLabStationIds(course);
   const labState = competencyStates(course).find((item) => item.type === "lab");
-  const available = labState ? isCompetencyStateAvailable(labState, course) : true;
+  const available = isAuthenticated() || (labState ? isCompetencyStateAvailable(labState, course) : true);
   const completed = labComplete(course);
 
-  $("#titulo-laboratorio").textContent = course.lab?.title || "Laboratorio de competencias";
+  $("#titulo-laboratorio").textContent = "Laboratorio de competencias Sananga";
 
-  $("#labStage").innerHTML = stations.length
+  $("#labStage").innerHTML = modules.length
     ? `
       <div class="panel-header">
         <div>
-          <p class="eyebrow">Programa activo</p>
-          <h3>${escapeHtml(course.title)}</h3>
+          <p class="eyebrow">${isAuthenticated() ? "Sesion con credenciales" : "Arquitectura publica"}</p>
+          <h3>Infraestructura modular del laboratorio</h3>
         </div>
         <span class="status-pill">${labProgressValue(course)}%</span>
       </div>
       <p class="muted-copy">
-        Este laboratorio traduce la competencia en practica observable. Cada estacion pide una evidencia
-        concreta antes de abrir el siguiente tramo del proceso formativo.
+        Puedes entrar directamente al laboratorio desde el dominio principal. La arquitectura es visible sin credenciales;
+        registrar evidencias y operar modulos exige sesion para no mezclar el laboratorio con el campus personal.
       </p>
       <div class="progress-track"><span style="width:${labProgressValue(course)}%"></span></div>
+      <div class="lab-entry-actions">
+        <button class="primary-action" data-lab-access type="button">${isAuthenticated() ? "Continuar laboratorio" : "Entrar con credenciales"}</button>
+        <button class="secondary-action" data-campus-entry="campus" type="button">Ir al campus</button>
+      </div>
       <div class="lab-station-grid">
-        ${stations
-          .map((station, index) => {
-            const isComplete = completedIds.includes(station.id);
+        ${modules
+          .map((module, index) => {
+            const isComplete = completedIds.includes(module.id);
             return `
               <article class="lab-station-card ${isComplete ? "is-complete" : ""}">
                 <div class="state-title-row">
                   <div>
-                    <span class="tag">Estacion ${index + 1}</span>
-                    <h4>${escapeHtml(station.title)}</h4>
+                    <span class="tag">${escapeHtml(module.layer)}</span>
+                    <h4>${index + 1}. ${escapeHtml(module.title)}</h4>
                   </div>
-                  <span class="status-pill">${isComplete ? "Evidencia OK" : available ? "Disponible" : "Bloqueada"}</span>
+                  <span class="status-pill">${isComplete ? "Modulo OK" : isAuthenticated() && available ? "Operable" : "Arquitectura"}</span>
                 </div>
-                <p>${escapeHtml(station.objective)}</p>
+                <p>${escapeHtml(module.objective)}</p>
+                <div class="tag-list">${module.components.map((item) => `<span class="tag info">${escapeHtml(item)}</span>`).join("")}</div>
                 <div class="evidence-box">
-                  <strong>Evidencia</strong>
-                  <p>${escapeHtml(station.evidence)}</p>
+                  <strong>Salida del modulo</strong>
+                  <p>${escapeHtml(module.output)}</p>
                 </div>
-                <button class="primary-action" data-lab-station="${station.id}" type="button" ${available || isComplete ? "" : "disabled"}>
-                  ${isComplete ? "Evidencia registrada" : "Registrar evidencia"}
+                <button class="primary-action" data-lab-station="${module.id}" type="button" ${isAuthenticated() && (available || isComplete) ? "" : "disabled"}>
+                  ${isComplete ? "Modulo registrado" : isAuthenticated() ? "Registrar modulo" : "Requiere credenciales"}
                 </button>
               </article>
             `;
@@ -1674,33 +1700,33 @@ function renderLab() {
   $("#labRubric").innerHTML = `
     <div class="panel-header">
       <div>
-        <p class="eyebrow">Rubrica del laboratorio</p>
-        <h3>Criterios de desempeno</h3>
+        <p class="eyebrow">Independencia operativa</p>
+        <h3>Campus y laboratorio conectados</h3>
       </div>
       <span class="status-pill">${completed ? "Aprobado" : "Pendiente"}</span>
     </div>
     <div class="kpi-stack">
-      <div class="kpi-row"><span>Estaciones</span><strong>${completedIds.length}/${stations.length}</strong></div>
+      <div class="kpi-row"><span>Modulos</span><strong>${completedIds.length}/${modules.length}</strong></div>
       <div class="kpi-row"><span>Habilita</span><strong>${courseRequiresPce(course) ? "PCE" : "Evaluacion"}</strong></div>
-      <div class="kpi-row"><span>Certificacion</span><strong>${completed ? "Suma evidencia" : "Bloqueada"}</strong></div>
+      <div class="kpi-row"><span>Acceso directo</span><strong>${isAuthenticated() ? "Activo" : "Publico"}</strong></div>
     </div>
     <div class="lab-rubric-list">
-      ${stations
+      ${modules
         .map(
-          (station) => `
+          (module) => `
           <article>
-            <strong>${escapeHtml(station.title)}</strong>
-            <p>${escapeHtml(station.rubric)}</p>
+            <strong>${escapeHtml(module.title)}</strong>
+            <p>${escapeHtml(module.output)}</p>
           </article>
         `
         )
         .join("")}
     </div>
     <div class="feedback-box">
-      <strong>Integracion con la ruta</strong>
+      <strong>Integracion sin desestabilizar el campus</strong>
       <p>
-        Al completar el laboratorio, la plataforma actualiza el pasaporte de competencia y permite avanzar
-        hacia PCE o evaluacion, segun la configuracion del programa.
+        El laboratorio tiene entrada y modulos propios. Cuando el usuario opera con credenciales, sus evidencias
+        actualizan el pasaporte de competencia del campus sin cambiar el rol activo ni mezclar datos de otros perfiles.
       </p>
     </div>
   `;
@@ -2104,10 +2130,12 @@ async function registerUser(event) {
         ? `Cuenta creada para ${email}; rol solicitado pendiente: ${roleCatalog[intent].label}.`
         : `Cuenta creada para ${email} como estudiante.`
   );
+  const destination = state.postAuthRoute || "inicio";
+  state.postAuthRoute = null;
   saveState();
   event.currentTarget.reset();
   showToast("Cuenta creada. Sesion iniciada.");
-  setView("inicio");
+  setView(destination);
 }
 
 async function loginUser(event) {
@@ -2142,10 +2170,12 @@ async function loginUser(event) {
   state.activeRoleId = user.assignedRoles.includes(state.activeRoleId) ? state.activeRoleId : user.assignedRoles[0];
   syncProfileFromUser(user);
   addEvent("login_exitoso", `Sesion iniciada para ${email} con rol ${currentRole()?.label}.`);
+  const destination = state.postAuthRoute || "inicio";
+  state.postAuthRoute = null;
   saveState();
   event.currentTarget.reset();
   showToast("Sesion iniciada.");
-  setView("inicio");
+  setView(destination);
 }
 
 function logoutUser() {
@@ -2286,6 +2316,36 @@ function bindEvents() {
       return;
     }
 
+    const campusEntryButton = event.target.closest("[data-campus-entry]");
+    if (campusEntryButton) {
+      event.preventDefault();
+      if (isAuthenticated()) {
+        setView("inicio");
+      } else {
+        state.postAuthRoute = "inicio";
+        state.activeAuthTab = "login";
+        saveState();
+        showToast("Inicia sesion para entrar al campus.");
+        setView("acceso");
+      }
+      return;
+    }
+
+    const labAccessButton = event.target.closest("[data-lab-access]");
+    if (labAccessButton) {
+      event.preventDefault();
+      if (isAuthenticated()) {
+        setView("laboratorio");
+      } else {
+        state.postAuthRoute = "laboratorio";
+        state.activeAuthTab = "login";
+        saveState();
+        showToast("Inicia sesion para operar el laboratorio.");
+        setView("acceso");
+      }
+      return;
+    }
+
     const enrollButton = event.target.closest("[data-enroll]");
     if (enrollButton) {
       enrollCourse(enrollButton.dataset.enroll);
@@ -2378,10 +2438,10 @@ function bindEvents() {
           ? "state-pce"
           : "state-evaluacion"
         : "state-laboratorio";
-      const station = courseLabStations(course).find((item) => item.id === stationId);
-      addEvent("laboratorio_evidencia", `Evidencia registrada en ${station?.title || stationId}.`);
+      const module = courseLabStations(course).find((item) => item.id === stationId);
+      addEvent("laboratorio_modulo", `Modulo de laboratorio registrado: ${module?.title || stationId}.`);
       saveState();
-      showToast(labComplete(course) ? "Laboratorio completo. Ya puedes continuar." : "Evidencia de laboratorio registrada.");
+      showToast(labComplete(course) ? "Laboratorio completo. Ya puedes continuar." : "Modulo de laboratorio registrado.");
       renderAll();
       return;
     }

@@ -54,7 +54,7 @@ La documentacion se enfoca en la experiencia web del LMS: navegacion, vistas, co
     Integra la arquitectura tecnica multi-programa: stack recomendado, modelo PostgreSQL objetivo, APIs, RBAC, trazabilidad, certificacion y migracion desde el prototipo.
 
 13. `13_laboratorio_competencias.md`
-    Define el laboratorio como fase practica dentro del programa: estaciones, evidencia, rubrica y bloqueo de PCE/evaluacion hasta completar desempeno observable.
+    Define el laboratorio como subecosistema con entrada directa, modulos propios, evidencias, rubricas y sincronizacion con el campus.
 
 ---
 
@@ -77,7 +77,7 @@ El MVP web actual cubre:
 - Sintesis documental del proyecto Sananga para orientar marketing, producto y siguientes componentes.
 - Linea de tiempo de vision del fundador para orientar cambios estrategicos del LMS.
 - Arquitectura tecnica objetivo para convertir el prototipo en plataforma multi-programa con programas como configuracion, no como codigo.
-- Laboratorio de competencias integrado a la ruta del programa y al bloqueo de PCE/evaluacion.
+- Laboratorio de competencias como subecosistema accesible directamente y tambien integrado a la ruta del programa.
 
 ---
 
