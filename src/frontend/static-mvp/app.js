@@ -2333,7 +2333,10 @@ function requestAccessFor(destination = "inicio", tab = "login") {
   setView("acceso");
   renderAuth();
   const panel = $(".auth-panel");
+  $("#authPanelTitle").textContent = tab === "register" ? "Crear cuenta" : "Iniciar sesion";
+  panel?.classList.add("is-attention");
   panel?.scrollIntoView({ behavior: "smooth", block: "center" });
+  window.setTimeout(() => panel?.classList.remove("is-attention"), 1400);
   const field = tab === "register" ? $("#registerEmail") : $("#loginEmail");
   field?.focus();
 }
@@ -2624,7 +2627,11 @@ function boot() {
     bindEvents();
     renderAll();
     const hashRoute = location.hash.replace("#", "");
-    setView(hashRoute || "inicio");
+    if (hashRoute === "login" || hashRoute === "registro") {
+      requestAccessFor("inicio", hashRoute === "registro" ? "register" : "login");
+    } else {
+      setView(hashRoute || "inicio");
+    }
   } catch (error) {
     console.error("SANANGA boot recovery", error);
     localStorage.removeItem(STORAGE_KEY);

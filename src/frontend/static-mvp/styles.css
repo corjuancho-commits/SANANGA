@@ -233,6 +233,12 @@ button:disabled {
   font-size: 1.35rem;
 }
 
+.auth-panel:target,
+.auth-panel.is-attention {
+  outline: 3px solid rgba(200, 146, 74, 0.55);
+  outline-offset: 4px;
+}
+
 .role-select-label {
   display: grid;
   gap: 4px;
@@ -273,10 +279,14 @@ main {
 .secondary-action,
 .icon-button,
 .segmented-control button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 40px;
   border-radius: 8px;
   border: 1px solid transparent;
   font-weight: 750;
+  text-decoration: none;
 }
 
 .primary-action {
